@@ -21,5 +21,17 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.aksw.sparqlify</groupId>
+      <artifactId>sparqlify-core</artifactId>
+      <version>0.6.8</version>
+    </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>maven.aksw.internal</id>
+      <name>University Leipzig, AKSW Maven2 Internal Repository</name>
+      <url>http://maven.aksw.org/repository/internal/</url>
+    </repository>
+  </repositories>
 </project>
