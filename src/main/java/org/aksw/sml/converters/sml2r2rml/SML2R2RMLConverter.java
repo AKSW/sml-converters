@@ -31,44 +31,35 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprFunction;
 import com.hp.hpl.jena.sparql.expr.FunctionLabel;
 
-public class R2RMLExporter {
+// just needed because I know no better way to let a method return multiple values
+class PredicateAndObject {
+    Property predicate;
+    RDFNode object;
+    
+    PredicateAndObject(Property predicate, RDFNode object) {
+        this.predicate = predicate;
+        this.object = object;
+    }
+}
 
-    private Collection<ViewDefinition> viewDefs;
-    private int triplesMapIdCounter;
+public class SML2R2RMLConverter {
+
+    private static int triplesMapIdCounter = 1;
     private static final String fnSymbolConcat = "concat";
 
-    // just needed because I know no better way to let a method return multiple values
-    private class PredicateAndObject {
-        Property predicate;
-        RDFNode object;
-
-        PredicateAndObject(Property predicate, RDFNode object) {
-            this.predicate = predicate;
-            this.object = object;
-        }
-    }
-
-    /**
-     * @param viewDefs
-     *            a Collection<ViewDefinition> containing view definition data
-     */
-    public R2RMLExporter(final Collection<ViewDefinition> viewDefs) {
-        this.viewDefs = viewDefs;
-        triplesMapIdCounter = 1;
-    }
 
     /**
      * The actual export method returning an RDF model
      * 
      * @return a com.hp.hpl.jena.rdf.model.Model representing the R2RML
-     *         structure
+     *     structure
      * @throws SMLVocabException 
      */
-    public Model export() throws SMLVocabException {
+    public static Model convert(final Collection<ViewDefinition> viewDefs) throws SMLVocabException {
         Model r2rml = ModelFactory.createDefaultModel();
 
         for (ViewDefinition viewDef : viewDefs) {
-        	exportViewDef(viewDef, r2rml);
+            exportViewDef(viewDef, r2rml);
         }
         return r2rml;
     }
@@ -80,7 +71,7 @@ public class R2RMLExporter {
      * @param r2rml a jena model representing the R2RML structure that will be built up
      * @throws SMLVocabException 
      */
-    private void exportViewDef(ViewDefinition viewDef, Model r2rml) throws SMLVocabException {
+    private static void exportViewDef(ViewDefinition viewDef, Model r2rml) throws SMLVocabException {
         SqlOpBase relation = (SqlOpBase) viewDef.getMapping().getSqlOp();
         List<Quad> patterns = (List<Quad>) viewDef.getTemplate().getList();
         VarDefinition varDefs = viewDef.getMapping().getVarDefinition();
@@ -111,7 +102,7 @@ public class R2RMLExporter {
      *      strings or certain functions like uri( ... )
      * @throws SMLVocabException 
      */
-    private void exportPattern(Quad pattern, SqlOpBase relation,
+    private static void exportPattern(Quad pattern, SqlOpBase relation,
             VarDefinition varDefs, Model r2rml) throws SMLVocabException {
         /*
          * Just some hints concerning the variable names: I will try to be as
@@ -275,7 +266,7 @@ public class R2RMLExporter {
      *     e.g. '[] rr:tableName "EMP"'
      * @throws SMLVocabException
      */
-    private Statement buildLogicalTableTriple(SqlOpBase relation, Model r2rml) throws SMLVocabException {
+    private static Statement buildLogicalTableTriple(SqlOpBase relation, Model r2rml) throws SMLVocabException {
         // subject (a blank node [])
         Resource logicalTableSubject = ResourceFactory.createResource();
         // predicate (rr:tableName or rr:sqlQuery)
@@ -321,7 +312,8 @@ public class R2RMLExporter {
      * @return a List<Statement> containing all the term map statements
      * @throws SMLVocabException 
      */
-    private List<Statement> buildTermMapStatements(Node mappingData, VarDefinition varDefs, Model r2rml) throws SMLVocabException {
+    private static List<Statement> buildTermMapStatements(Node mappingData,
+            VarDefinition varDefs, Model r2rml) throws SMLVocabException {
         List<Statement> results = new ArrayList<Statement>();
 
         // a blank node []
@@ -448,7 +440,8 @@ public class R2RMLExporter {
      * @return a list of predicates and objects
      * @throws SMLVocabException 
 	 */
-	private List<PredicateAndObject> processRestrictions(Collection<RestrictedExpr> restrictions) throws SMLVocabException {
+	private static List<PredicateAndObject> processRestrictions(
+	        Collection<RestrictedExpr> restrictions) throws SMLVocabException {
         String exprStr = "";
         String langTag = null;
         Node_URI type = null;
@@ -644,7 +637,7 @@ public class R2RMLExporter {
      *      (rr:termType) and the object (e.g. rr:Literal) of the term type
      *      definition 
      */
-    private PredicateAndObject buildTermTypePredAndObj(String rrTermType) {
+    private static PredicateAndObject buildTermTypePredAndObj(String rrTermType) {
         Property termTypePredicate = ResourceFactory.createProperty(RR.termType);
         Resource termTypeObjct = ResourceFactory.createResource(rrTermType);
 
@@ -660,7 +653,7 @@ public class R2RMLExporter {
      *      (rr:dataType) and the object (e.g. xsd:string) of the rr:dataType
      *      expression
      */
-    private PredicateAndObject buildDataTypePredAndObj(Node_URI type) {
+    private static PredicateAndObject buildDataTypePredAndObj(Node_URI type) {
         Property rrDataTypePredicate = ResourceFactory.createProperty(RR.datatype);
         Resource rrDataTypeObject = ResourceFactory.createResource(type.toString());
 
@@ -678,7 +671,7 @@ public class R2RMLExporter {
      *         (rr:language) and object (e.g. "en") of the rr:language
      *         expression
      */
-    private PredicateAndObject buildLangPredAndObj(String langTag) {
+    private static PredicateAndObject buildLangPredAndObj(String langTag) {
         Property rrLangPredicate = ResourceFactory.createProperty(RR.language);
         Literal rrLangObject = ResourceFactory.createPlainLiteral(langTag);
 
@@ -698,7 +691,7 @@ public class R2RMLExporter {
      * @return a String containing the R2RML counterpart of these Sparqlify-ML
      *         expressions
      */
-    private String processRestrExpr(Expr expr) {
+    private static String processRestrExpr(Expr expr) {
         String exprStr = "";
 
         /*
