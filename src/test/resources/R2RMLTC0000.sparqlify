@@ -1,7 +1,0 @@
-Create View TriplesMap1 As
-    Construct {
-        ?b a :Bar .
-    }
-    With
-        ?b = bNode(23)
-    From Student
