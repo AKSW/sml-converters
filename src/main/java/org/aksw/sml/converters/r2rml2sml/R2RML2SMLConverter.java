@@ -41,7 +41,7 @@ public class R2RML2SMLConverter {
         Multimap<LogicalTable, TriplesMap> tableToTm = HashMultimap.create();
 
         // Group triple maps by their logical table
-        for (TriplesMap triplesMap : r2rmlSpecs.getTripleMaps()) {
+        for (TriplesMap triplesMap : r2rmlSpecs.getTriplesMaps()) {
             LogicalTable logicalTable = triplesMap.getLogicalTable();
 
             tableToTm.put(logicalTable, triplesMap);
@@ -127,7 +127,7 @@ public class R2RML2SMLConverter {
     }
 
     /** @author sherif */
-    public static VarDefinition getVarDefinition(QuadPattern template,
+    protected static VarDefinition getVarDefinition(QuadPattern template,
             Multimap<Var, RestrictedExpr> varToExprs, Var subjectVar,
             VarDefinition varDef, PredicateObjectMap pom, ObjectMap om, Generator genO) {
 

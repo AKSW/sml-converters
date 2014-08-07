@@ -17,9 +17,8 @@ public class R2RMLSpec {
         this.model = model;
     }
 
-    public Set<TriplesMap> getTripleMaps() {
+    public Set<TriplesMap> getTriplesMaps() {
         Set<TriplesMap> result = new HashSet<TriplesMap>();
-
         Set<Resource> tripleMaps = model.listSubjectsWithProperty(RR.logicalTable).toSet();
 
         for(Resource resource : tripleMaps) {
