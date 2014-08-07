@@ -98,6 +98,7 @@ public class R2RMLSpecTest {
 
         return r2rml;
     }
+
     @Test
     public void test_getTriplesMaps_1() {
         Model r2rml = readR2RML(r2rml1);
