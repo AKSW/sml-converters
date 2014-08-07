@@ -32,7 +32,16 @@ public class TriplesMap {
     /**
      * @return the subject
      */
+    @Deprecated
     public Resource getSubject() {
+        return subject;
+    }
+
+    /**
+     * Returns the actual triples map resource
+     * @return the actual triples map resource
+     */
+    public Resource getResource() {
         return subject;
     }
 
