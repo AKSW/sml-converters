@@ -36,18 +36,22 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class R2RML2SMLConverter {
 
-    public static List<ViewDefinition> convert(Model r2rmlMappings) {
-        R2RMLSpec r2rmlSpecs = new R2RMLSpec(r2rmlMappings);
+    protected static Multimap<LogicalTable, TriplesMap> buildTblToTM(R2RMLSpec r2rmlSpec) {
         Multimap<LogicalTable, TriplesMap> tableToTm = HashMultimap.create();
 
-        // Group triple maps by their logical table
-        for (TriplesMap triplesMap : r2rmlSpecs.getTriplesMaps()) {
-            LogicalTable logicalTable = triplesMap.getLogicalTable();
-
-            tableToTm.put(logicalTable, triplesMap);
+        // Group triples maps by their logical table
+        for (TriplesMap triplesMap : r2rmlSpec.getTriplesMaps()) {
+            tableToTm.put(triplesMap.getLogicalTable(), triplesMap);
         }
 
-        List<ViewDefinition> result = new ArrayList<ViewDefinition>();
+        return tableToTm;
+    }
+
+    public static List<ViewDefinition> convert(Model r2rmlMappings) {
+        R2RMLSpec r2rmlSpec = new R2RMLSpec(r2rmlMappings);
+        Multimap<LogicalTable, TriplesMap> tableToTm = buildTblToTM(r2rmlSpec);
+
+        List<ViewDefinition> viewDefs = new ArrayList<ViewDefinition>();
 
         // Let's create view definitions
         for (Entry<LogicalTable, Collection<TriplesMap>> entry : tableToTm.asMap().entrySet()) {
@@ -106,11 +110,11 @@ public class R2RML2SMLConverter {
                 Mapping mapping = new Mapping(varDef, op);
                 ViewDefinition viewDef = new ViewDefinition(name,template, null, mapping, entry);
 
-                result.add(viewDef);
+                viewDefs.add(viewDef);
             }
         }
 
-        return result;
+        return viewDefs;
     }
 
     @Deprecated
