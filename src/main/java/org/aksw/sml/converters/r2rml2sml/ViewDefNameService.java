@@ -19,6 +19,12 @@ public class ViewDefNameService {
     public String getNameFromUri(String triplesMapUri) {
         String[] triplesMapUriParts = triplesMapUri.split("/");
         String localPart = triplesMapUriParts[triplesMapUriParts.length-1];
+        // there may still be dots, hash signs or percent characters (stemming
+        // from percent encoded characters
+        localPart = localPart.replace("#", "");
+        localPart = localPart.replace("%", "");
+        localPart = localPart.replace(".", "");
+
         String name = localPart;
         int counter = 2;
 
