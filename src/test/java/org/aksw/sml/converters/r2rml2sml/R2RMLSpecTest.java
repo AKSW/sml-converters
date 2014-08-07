@@ -110,7 +110,7 @@ public class R2RMLSpecTest {
         Set<TriplesMap> triplesMaps = spec.getTriplesMaps();
         Set<Resource> tmResources = new HashSet<Resource>();
         for (TriplesMap tm : triplesMaps) {
-            tmResources.add(tm.getSubject());
+            tmResources.add(tm.getResource());
         }
 
         assertEquals(expectedNumTMResources, triplesMaps.size());
@@ -130,7 +130,7 @@ public class R2RMLSpecTest {
         Set<TriplesMap> triplesMaps = spec.getTriplesMaps();
         Set<Resource> tmResources = new HashSet<Resource>();
         for (TriplesMap tm : triplesMaps) {
-            tmResources.add(tm.getSubject());
+            tmResources.add(tm.getResource());
         }
 
         assertEquals(expectedNumTMResources, triplesMaps.size());
@@ -152,7 +152,7 @@ public class R2RMLSpecTest {
         Set<TriplesMap> triplesMaps = spec.getTriplesMaps();
         Set<Resource> tmResources = new HashSet<Resource>();
         for (TriplesMap tm : triplesMaps) {
-            tmResources.add(tm.getSubject());
+            tmResources.add(tm.getResource());
         }
 
         assertEquals(expectedNumTMResources, triplesMaps.size());
