@@ -7,7 +7,6 @@ import org.aksw.sml.converters.vocabs.RR;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 
 public class LogicalTable {
@@ -26,8 +25,7 @@ public class LogicalTable {
     }
 
     public String getTableName() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.tableName)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.tableName).toSet();
 
         if(objects.isEmpty()) {
             return null;

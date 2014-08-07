@@ -8,7 +8,6 @@ import org.aksw.sml.converters.vocabs.RR;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 public class TriplesMap {
     private Model model;
@@ -41,8 +40,7 @@ public class TriplesMap {
         Set<PredicateObjectMap> result = new HashSet<PredicateObjectMap>();
 
         // list all predicate object maps
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.predicateObjectMap)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.predicateObjectMap).toSet();
 
         for(RDFNode object : objects) {
             Resource r = (Resource)object;
@@ -54,8 +52,7 @@ public class TriplesMap {
     }
 
     public LogicalTable getLogicalTable() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.logicalTable)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.logicalTable).toSet();
 
         Resource resource = RRUtils.getResourceFromSet(objects);
         LogicalTable result = new LogicalTable(model, resource);
@@ -64,8 +61,7 @@ public class TriplesMap {
     }
 
     public SubjectMap getSubjectMap() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.subjectMap)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.subjectMap).toSet();
 
         Resource resource = RRUtils.getResourceFromSet(objects);
         SubjectMap result = new SubjectMap(model, resource);

@@ -7,7 +7,6 @@ import org.aksw.sml.converters.vocabs.RR;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 public class SubjectMap {
 
@@ -22,8 +21,7 @@ public class SubjectMap {
     }
 
     public RDFNode getRrClass() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.class_)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject,RR.class_).toSet();
 
         if(objects.isEmpty()) {
             return null;
@@ -35,8 +33,7 @@ public class SubjectMap {
     }
 
     public String getTemplate() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.template)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.template).toSet();
 
         if(objects.isEmpty()) {
             return null;

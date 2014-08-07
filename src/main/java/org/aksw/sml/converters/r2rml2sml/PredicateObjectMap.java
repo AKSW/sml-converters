@@ -8,7 +8,6 @@ import org.aksw.sml.converters.vocabs.RR;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 /**
  * @author sherif
@@ -25,8 +24,7 @@ public class PredicateObjectMap {
     }
 
     public RDFNode getPredicate() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.predicate)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.predicate).toSet();
 
         if (objects.isEmpty()) {
             return null;
@@ -41,8 +39,7 @@ public class PredicateObjectMap {
         Set<ObjectMap> result = new HashSet<ObjectMap>();
 
         // list all predicate object maps
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.objectMap)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.objectMap).toSet();
 
         for (RDFNode object : objects) {
             Resource r = (Resource) object;
@@ -54,8 +51,7 @@ public class PredicateObjectMap {
     }
 
     public String getDataType() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.datatype)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.datatype).toSet();
 
         if (objects.isEmpty()) {
             return null;

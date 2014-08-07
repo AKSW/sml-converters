@@ -65,9 +65,9 @@ public class SML2R2RMLConverter {
     }
 
     /**
-     * Derives an R2RML graph from the given Sparqlify-ML view definition input
+     * Derives an R2RML graph from the given SML view definition input
      * 
-     * @param viewDef a Sparqlify-ML view definition
+     * @param viewDef a SML view definition
      * @param r2rml a jena model representing the R2RML structure that will be built up
      * @throws SMLVocabException 
      */
@@ -131,8 +131,7 @@ public class SML2R2RMLConverter {
         /*
          * logical table
          */
-        Property triplesMapPredicate_logicalTable =
-                ResourceFactory.createProperty(RR.logicalTable);
+        Property triplesMapPredicate_logicalTable = RR.logicalTable;
 
         Statement logicalTblStatement_tblDefinition = buildLogicalTableTriple(relation, r2rml);
         r2rml.add(logicalTblStatement_tblDefinition);
@@ -160,8 +159,7 @@ public class SML2R2RMLConverter {
         // <#TriplesMap2> rr:subjectMap []
         if (triplesMapStatement_subjectMaps.size() > 0) {
             // rr:subjectMap
-            Property triplesMapPredicate_subjectMap =
-                    ResourceFactory.createProperty(RR.subjectMap);
+            Property triplesMapPredicate_subjectMap = RR.subjectMap;
             // []
             RDFNode triplesMapObject_subjectMap =
                     (RDFNode) triplesMapStatement_subjectMaps.get(0).getSubject();
@@ -216,8 +214,7 @@ public class SML2R2RMLConverter {
                 ResourceFactory.createResource();
 
         // 1) the statement for [#1] rr:predicateMap [#2]
-        Property predicateObjectMapPredicate_predicateMap =
-                ResourceFactory.createProperty(RR.predicateMap);
+        Property predicateObjectMapPredicate_predicateMap = RR.predicateMap;
         // [#2]
         RDFNode predicateObjectMapObject_predicateMap =
                 (RDFNode) prediacteMapStatements.get(0).getSubject();
@@ -230,8 +227,7 @@ public class SML2R2RMLConverter {
         r2rml.add(predicateObjectMapStatement_predicateMap);
 
         // 2) the statement for [#1] rr:objectMap [#3]
-        Property prediacteObjectMapPrediacte_objectMap =
-                ResourceFactory.createProperty(RR.objectMap);
+        Property prediacteObjectMapPrediacte_objectMap = RR.objectMap;
         // [#3]
         RDFNode prediacteObjectMapObject_objectMap =
                 (RDFNode) objectMapStatements.get(0).getSubject();
@@ -244,8 +240,7 @@ public class SML2R2RMLConverter {
         r2rml.add(predicateObjectMapStatement_objectMap);
 
         // 3) the statement for <#TriplesMap2> rr:prediacteObjectMap [#1]
-        Property triplesMapPredicate_predicateObjectMap =
-                ResourceFactory.createProperty(RR.predicateObjectMap);
+        Property triplesMapPredicate_predicateObjectMap = RR.predicateObjectMap;
 
         Statement triplesMapStatement_predicateObjectMap = r2rml.createStatement(
                 triplesMapSubject,
@@ -278,13 +273,13 @@ public class SML2R2RMLConverter {
         if (relation instanceof SqlOpTable) {
             // it's a table
             SqlOpTable tbl = (SqlOpTable) relation;
-            logicalTablePredicate = ResourceFactory.createProperty(RR.tableName);
+            logicalTablePredicate = RR.tableName;
             logicalTableObject = ResourceFactory.createPlainLiteral(tbl.getTableName());
 
         } else if (relation instanceof SqlOpQuery) {
             // it's a query
             SqlOpQuery query = (SqlOpQuery) relation;
-            logicalTablePredicate = ResourceFactory.createProperty(RR.sqlQuery);
+            logicalTablePredicate = RR.sqlQuery;
             logicalTableObject = ResourceFactory.createPlainLiteral(query.getQueryString());
 
         } else {
@@ -375,7 +370,7 @@ public class SML2R2RMLConverter {
                  */
 
                 Resource mapObject_uri = ResourceFactory.createResource(mappingData.getURI());
-                mapPredicate = ResourceFactory.createProperty(RR.constant);
+                mapPredicate = RR.constant;
 
                 resultStatement = r2rml.createStatement(mapSubject,
                         mapPredicate, mapObject_uri);
@@ -400,19 +395,15 @@ public class SML2R2RMLConverter {
                 // first add the term type statement -- the actual term map
                 // value statement will be added generically
                 Statement termTypeStatement = r2rml.createStatement(
-                        mapSubject,
-                        ResourceFactory.createProperty(RR.termType),
-                        ResourceFactory.createResource(RR.BlankNode));
+                        mapSubject, RR.termType, RR.BlankNode);
+
                 results.add(termTypeStatement);
 
                 String bNodeId = ((Node_Blank) mappingData).getBlankNodeId().toString();
                 mapObject = ResourceFactory.createPlainLiteral(bNodeId);
             }
 
-            resultStatement = r2rml.createStatement(
-                    mapSubject,
-                    ResourceFactory.createProperty(RR.constant),
-                    mapObject);
+            resultStatement = r2rml.createStatement(mapSubject, RR.constant, mapObject);
             results.add(resultStatement);
         }
 
@@ -422,7 +413,7 @@ public class SML2R2RMLConverter {
     /**
      * Builds up an R2RML literal string -- the actual mapping value that can be
      * constructed like this: "http://data.example.com/department/{DEPTNO}" .
-     * This would correspond to the following Sparqlify-ML expression:
+     * This would correspond to the following SML expression:
      * uri(concat("http://data.example.com/department/", ?DEPTNO))
      * 
      * So the given restrictions Collection encompass the following nested
@@ -445,7 +436,7 @@ public class SML2R2RMLConverter {
         String exprStr = "";
         String langTag = null;
         Node_URI type = null;
-        String termType = null;
+        Resource termType = null;
 
         List<PredicateAndObject> results = new ArrayList<PredicateAndObject>();
 
@@ -478,7 +469,7 @@ public class SML2R2RMLConverter {
 
                     if (firstArg.isVariable()) {
                         // ...a variable as first argument --> rr:column
-                        mapPredicate = ResourceFactory.createProperty(RR.column);
+                        mapPredicate = RR.column;
 
                         // Yes, this is  a bit goofy, but I have to strip off the
                         // curly braces added in the processRestrExpr method before.
@@ -499,11 +490,11 @@ public class SML2R2RMLConverter {
                          * here being more general than rr:constant, which
                          * would be the clean choice here
                          */
-                        mapPredicate = ResourceFactory.createProperty(RR.template);
+                        mapPredicate = RR.template;
 
                     } else {
                         // ...a constant --> rr:constant
-                        mapPredicate = ResourceFactory.createProperty(RR.constant);
+                        mapPredicate = RR.constant;
                     }
 
                     // get language tag (if set)
@@ -530,7 +521,7 @@ public class SML2R2RMLConverter {
 
                     if (firstArg.isVariable()) {
                         // rr:column
-                        mapPredicate = ResourceFactory.createProperty(RR.column);
+                        mapPredicate = RR.column;
 
                         // Yes, this is  a bit goofy, but I have to strip off the
                         // curly braces added in the processRestrExpr method before.
@@ -542,11 +533,11 @@ public class SML2R2RMLConverter {
 
                     } else if (firstArg.isFunction()) {
                         // rr:template
-                        mapPredicate = ResourceFactory.createProperty(RR.template);
+                        mapPredicate = RR.template;
 
                     } else {
                         // rr:constant
-                        mapPredicate = ResourceFactory.createProperty(RR.constant);
+                        mapPredicate = RR.constant;
                     }
 
                     // get type
@@ -558,8 +549,7 @@ public class SML2R2RMLConverter {
                         if (funcArgs.get(1).isConstant() &&
                                 funcArgs.get(1).getConstant().isIRI()) {
                             // looks like this could be a type declaration
-                            type = (Node_URI) funcArgs.get(1).getConstant()
-                                    .getNode();
+                            type = (Node_URI) funcArgs.get(1).getConstant().getNode();
                         }
                     }
 
@@ -570,14 +560,11 @@ public class SML2R2RMLConverter {
                         new FunctionLabel(SparqlifyConstants.blankNodeLabel))) {
                     termType = RR.BlankNode;
 
-                    mapPredicate = ResourceFactory.createProperty(RR.constant);
+                    mapPredicate = RR.constant;
                     Resource mapObject = ResourceFactory.createResource();
                     PredicateAndObject result = new PredicateAndObject(mapPredicate, mapObject);
                     results.add(result);
-
-                    PredicateAndObject bNodeTypePredAndObj = buildTermTypePredAndObj(termType);
-
-                    results.add(bNodeTypePredAndObj);
+                    results.add(new PredicateAndObject(RR.termType, termType));
 
                     /*
                      * It would be
@@ -595,10 +582,10 @@ public class SML2R2RMLConverter {
                             new FunctionLabel(SparqlifyConstants.uriLabel))) {
                         termType = RR.IRI;
                     }
-                    mapPredicate = ResourceFactory.createProperty(RR.template);
+                    mapPredicate = RR.template;
                 }
 
-            // There is just a variable or given. (The case of a constand was
+            // There is just a variable or given. (The case of a constant was
             // already handled above.) Since such expressions
             // (e.g. ?variable_name=?COUMN) would violate the SML, this branch
             // should never be reached.
@@ -611,13 +598,12 @@ public class SML2R2RMLConverter {
             results.add(result);
 
             if (termType != null) {
-                PredicateAndObject termTypePredAndObj = buildTermTypePredAndObj(termType);
-                results.add(termTypePredAndObj);
+                results.add(new PredicateAndObject(RR.termType, termType));
             }
 
             if (langTag != null) {
-                PredicateAndObject rrlanguage = buildLangPredAndObj(langTag);
-                results.add(rrlanguage);
+                // add sth. like rr:language "en"
+                results.add(new PredicateAndObject(RR.language, ResourceFactory.createPlainLiteral(langTag)));
 
             } else if (type != null) {
                 PredicateAndObject rrDataType = buildDataTypePredAndObj(type);
@@ -626,22 +612,6 @@ public class SML2R2RMLConverter {
         }
 
         return results;
-    }
-
-    /**
-     * Builds the predicate and object of the rr:termType definition, e.g
-     * [] rr:termType rr:Literal
-     * 
-     * @param termType one of literalType, bNodeType and uriType
-     * @return a PredicateAndObject object containing the predicate
-     *      (rr:termType) and the object (e.g. rr:Literal) of the term type
-     *      definition 
-     */
-    private static PredicateAndObject buildTermTypePredAndObj(String rrTermType) {
-        Property termTypePredicate = ResourceFactory.createProperty(RR.termType);
-        Resource termTypeObjct = ResourceFactory.createResource(rrTermType);
-
-        return new PredicateAndObject(termTypePredicate, termTypeObjct);
     }
 
     /**
@@ -654,42 +624,22 @@ public class SML2R2RMLConverter {
      *      expression
      */
     private static PredicateAndObject buildDataTypePredAndObj(Node_URI type) {
-        Property rrDataTypePredicate = ResourceFactory.createProperty(RR.datatype);
         Resource rrDataTypeObject = ResourceFactory.createResource(type.toString());
 
-        return new PredicateAndObject(rrDataTypePredicate, rrDataTypeObject);
-    }
-
-    /**
-     * Builds the predicate and object of a language restriction like
-     * [] rr:language "en" based on a Sparqlify-ML plainLiteral setting like in
-     * plainLiteral(?foo, 'en')
-     * 
-     * @param langTag
-     *            a String containing a language abbreviation like 'en' or 'de'
-     * @return a PredicateAndObject object containing the predicate
-     *         (rr:language) and object (e.g. "en") of the rr:language
-     *         expression
-     */
-    private static PredicateAndObject buildLangPredAndObj(String langTag) {
-        Property rrLangPredicate = ResourceFactory.createProperty(RR.language);
-        Literal rrLangObject = ResourceFactory.createPlainLiteral(langTag);
-
-        return new PredicateAndObject(rrLangPredicate, rrLangObject);
+        return new PredicateAndObject(RR.datatype, rrDataTypeObject);
     }
 
     /**
      * Processes (at the time of writing some) known functions available in the
-     * Sparqlify-ML, variables and constant strings. Since arguments of the
-     * considered function can be functions, variables or constant strings as
-     * well, this method is called recursively to get to the most inner
-     * expression and build up the rest based on that.
+     * SML, variables and constant strings. Since arguments of the considered
+     * function can be functions, variables or constant strings as well, this
+     * method is called recursively to get to the most inner expression and
+     * build up the rest based on that.
      * 
      * @param expr
      *            a restriction expression (com.hp.hpl.jena.sparql.expr.Expr)
      *            like a function (concat( ... ), uri( ... ), ...) or a variable
-     * @return a String containing the R2RML counterpart of these Sparqlify-ML
-     *         expressions
+     * @return a String containing the R2RML counterpart of these SML expressions
      */
     private static String processRestrExpr(Expr expr) {
         String exprStr = "";

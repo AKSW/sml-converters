@@ -9,7 +9,6 @@ import org.aksw.sml.converters.vocabs.RR;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 enum TermMapSpec {
     COLUMN, CONSTANT, TEMPLATE, JOIN
@@ -70,8 +69,7 @@ public class ObjectMap {
     }
 
     public String getColumnName() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.column)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.column).toSet();
 
         if (objects.isEmpty()) {
             return null;
@@ -84,8 +82,7 @@ public class ObjectMap {
     }
 
     public boolean containColumn() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.column)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.column).toSet();
 
         if (objects.isEmpty()) {
             return false;
@@ -94,8 +91,7 @@ public class ObjectMap {
     }
 
     public String getConstant() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.constant)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.constant).toSet();
 
         if (objects.isEmpty()) {
             return null;
@@ -108,8 +104,7 @@ public class ObjectMap {
     }
 
     public boolean containConstant() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.constant)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.constant).toSet();
 
         if (objects.isEmpty()) {
             return false;
@@ -118,8 +113,7 @@ public class ObjectMap {
     }
 
     public String getTemplate() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.template)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.template).toSet();
 
         if(objects.isEmpty()) {
             return null;
@@ -132,8 +126,7 @@ public class ObjectMap {
     }
 
     public boolean containTemplate() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.template)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.template).toSet();
 
         if (objects.isEmpty()) {
             return false;
@@ -142,8 +135,7 @@ public class ObjectMap {
     }
 
     RDFNode getDatatype() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.datatype)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.datatype).toSet();
 
         if (objects.isEmpty()) {
             return null;
@@ -154,8 +146,7 @@ public class ObjectMap {
     }
 
     RDFNode getLanguageTag() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.language)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.language).toSet();
 
         if (objects.isEmpty()) {
             return null;
@@ -166,8 +157,7 @@ public class ObjectMap {
     }
 
     RDFNode getTermType() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.language)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.language).toSet();
 
         if (objects.isEmpty()) {
             return null;
@@ -180,8 +170,7 @@ public class ObjectMap {
     public Set<JoinCondition> getJoinCondition() {
 
         Set<JoinCondition> result = new HashSet<JoinCondition>();
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.joinCondition)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.joinCondition).toSet();
 
         if(objects.isEmpty()){
             return null;
@@ -196,8 +185,7 @@ public class ObjectMap {
     }
 
     public boolean containJoinCondition() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject,
-                ResourceFactory.createProperty(RR.joinCondition)).toSet();
+        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.joinCondition).toSet();
 
         if (objects.isEmpty()) {
             return false;

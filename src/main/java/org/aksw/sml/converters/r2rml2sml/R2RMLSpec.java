@@ -7,7 +7,6 @@ import org.aksw.sml.converters.vocabs.RR;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 public class R2RMLSpec {
     private Model model;
@@ -21,8 +20,7 @@ public class R2RMLSpec {
     public Set<TriplesMap> getTripleMaps() {
         Set<TriplesMap> result = new HashSet<TriplesMap>();
 
-        Set<Resource> tripleMaps = model.listSubjectsWithProperty(
-                ResourceFactory.createProperty(RR.logicalTable)).toSet();
+        Set<Resource> tripleMaps = model.listSubjectsWithProperty(RR.logicalTable).toSet();
 
         for(Resource resource : tripleMaps) {
             TriplesMap item = new TriplesMap(model, resource);
