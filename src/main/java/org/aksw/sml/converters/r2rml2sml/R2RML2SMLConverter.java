@@ -2,7 +2,9 @@ package org.aksw.sml.converters.r2rml2sml;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.aksw.sparqlify.algebra.sparql.expr.E_StrConcatPermissive;
@@ -50,8 +52,13 @@ public class R2RML2SMLConverter {
         // Let's create view definitions
         for (Entry<LogicalTable, Collection<TriplesMap>> entry : tableToTm.asMap().entrySet()) {
             LogicalTable logicalTable = entry.getKey();
+            
+            // using the local part of the triples map URI as view definition name
+            // TODO: check if view definition name already exists
             Collection<TriplesMap> triplesMaps = entry.getValue();
-            String name = logicalTable + "" + triplesMaps;
+            String[] triplesMapUriParts = triplesMaps.toArray()[0].toString().split("/");
+            String name = triplesMapUriParts[triplesMapUriParts.length-1];
+
             QuadPattern template = new QuadPattern();
 
             for (TriplesMap triplesMap : triplesMaps) {
@@ -104,6 +111,19 @@ public class R2RML2SMLConverter {
         }
 
         return result;
+    }
+
+    @Deprecated
+    public static Map<String, ViewDefinition> convert2NameHash(Model r2rmlMappings) {
+        Map<String, ViewDefinition> nameViewDefs = new HashMap<String, ViewDefinition>();
+        
+        List<ViewDefinition> viewDefs = convert(r2rmlMappings);
+        
+        for (ViewDefinition viewDef : viewDefs) {
+            nameViewDefs.put(viewDef.getName(), viewDef);
+        }
+        
+        return nameViewDefs;
     }
 
     /** @author sherif */
