@@ -19,22 +19,49 @@ public class RRUtils {
         return result;
     }
 
-    public static Resource getResourceFromSet(Set<RDFNode> set) {
+    public static RDFNode getNodeFromSet(Set<RDFNode> set) {
         if(set.isEmpty() || set.size() > 1) {
             throw new RuntimeException("Need exactly one element");
         }
 
-        RDFNode item = getFirst(set);
+        return getFirst(set);
+    }
 
-        Resource result = (Resource)item;
-        return result;
+    public static RDFNode getNodeFromSetIfExists(Set<RDFNode> set) {
+        if(set.size() > 1) {
+            throw new RuntimeException("Need at most one element");
+        } else if (set.isEmpty()) {
+            return null;
+        }
+
+        return getFirst(set);
+    }
+
+
+    public static Resource getResourceFromSet(Set<RDFNode> set) {
+        RDFNode item = getNodeFromSet(set);
+
+        return (Resource) item;
     }
 
     public static Statement getStatementFromSet(Set<Statement> set) {
         if(set.isEmpty() || set.size() > 1) {
-            throw new RuntimeException("Need exactly one element");
+            throw new RuntimeException("Need exactly one statement");
         }
 
+        Statement item = getFirst(set);
+
+        Statement result = (Statement) item;
+        return result;
+    }
+
+    public static Statement getStatementFromSetIfExists(Set<Statement> set) {
+        if(set.size() > 1) {
+            throw new RuntimeException("Need at most one statement");
+        } else if (set.isEmpty()) {
+            return null;
+        }
+        
         Statement item = getFirst(set);
 
         Statement result = (Statement) item;
