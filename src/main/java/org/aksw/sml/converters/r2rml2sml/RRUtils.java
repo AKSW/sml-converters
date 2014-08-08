@@ -6,6 +6,7 @@ import org.aksw.sparqlify.algebra.sparql.expr.E_StrConcatPermissive;
 
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
@@ -26,6 +27,17 @@ public class RRUtils {
         RDFNode item = getFirst(set);
 
         Resource result = (Resource)item;
+        return result;
+    }
+
+    public static Statement getStatementFromSet(Set<Statement> set) {
+        if(set.isEmpty() || set.size() > 1) {
+            throw new RuntimeException("Need exactly one element");
+        }
+
+        Statement item = getFirst(set);
+
+        Statement result = (Statement) item;
         return result;
     }
 
