@@ -1,40 +1,62 @@
 package org.aksw.sml.converters.r2rml2sml;
 
-import java.util.Set;
-
 import org.aksw.sml.converters.vocabs.RR;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 
 public class LogicalTable {
+    public static final String tblType = "table";
+    public static final String queryType = "query";
+    public static enum LogTableType { TABLE, QUERY }; 
+
     private Model model;
-    private Resource subject;
+    private Resource lTblResource;
+    private LogTableType type;
+    private String lTblExpression;
 
     /** @author sherif */
-    public LogicalTable(Model model, Resource subject) {
+    public LogicalTable(Model model, Resource logicalTableResource) {
         super();
         this.model = model;
-        this.subject = subject;
-    }
+        this.lTblResource = logicalTableResource;
+        
+        StmtIterator props = model.listStatements(lTblResource, null, (RDFNode) null);
+        Statement sttmnt = RRUtils.getStatementFromSet(props.toSet());
+        Property logTblProp = sttmnt.getPredicate();
 
-    public boolean isTableName() {
-        return getTableName() != null;
-    }
+        // get table type
+        if (logTblProp.equals(RR.tableName)) {
+            type = LogTableType.TABLE;
 
-    public String getTableName() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.tableName).toSet();
+        } else if (logTblProp.equals(RR.sqlQuery)) {
+            type = LogTableType.QUERY;
 
-        if(objects.isEmpty()) {
-            return null;
+        } else {
+            throw new RuntimeException("The logical table should have " +
+                    "either an rr:tableName or rr:sqlQuery property");
         }
 
-        RDFNode node = RRUtils.getFirst(objects);
-        String result = "" + node.asNode().getLiteralValue();
+        // get table expression
+        RDFNode logTblObject = sttmnt.getObject();
+        lTblExpression = logTblObject.asLiteral().getString();
+    }
 
-        return result;
+    public boolean isTable() {
+        return type.equals(LogTableType.TABLE);
+    }
+
+    public boolean isQuery() {
+        return type.equals(LogTableType.QUERY);
+    }
+
+    public String getTableExpression() {
+        return lTblExpression;
     }
 
     /**
@@ -47,8 +69,17 @@ public class LogicalTable {
     /**
      * @return the subject
      */
+    @Deprecated
     public Resource getSubject() {
-        return subject;
+        return lTblResource;
+    }
+
+    /**
+     * Returns the actual logical table resource (should be a blank node)
+     * @return the actual logical table resource (should be a blank node)
+     */
+    public Resource getResource() {
+        return lTblResource;
     }
 
     /* (non-Javadoc)
@@ -57,7 +88,7 @@ public class LogicalTable {
     @Override
     public String toString() {
         // TODO Implement properly - take the case of SQL query into account
-        return getTableName();
+        return getTableExpression();
     }
 
     /* (non-Javadoc)
@@ -68,7 +99,7 @@ public class LogicalTable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((model == null) ? 0 : model.hashCode());
-        result = prime * result + ((subject == null) ? 0 : subject.hashCode());
+        result = prime * result + ((lTblResource == null) ? 0 : lTblResource.hashCode());
 
         return result;
     }
@@ -89,10 +120,10 @@ public class LogicalTable {
         } else if (!model.equals(other.model))
             return false;
 
-        if (subject == null) {
-            if (other.subject != null) return false;
+        if (lTblResource == null) {
+            if (other.lTblResource != null) return false;
 
-        } else if (!subject.equals(other.subject)) return false;
+        } else if (!lTblResource.equals(other.lTblResource)) return false;
 
         return true;
     }
