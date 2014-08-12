@@ -9,71 +9,36 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-/**
- * @author sherif
- */
 public class PredicateObjectMap {
     private Model model;
-    private Resource subject;
+    private Resource resource;
 
     /** @author sherif */
-    public PredicateObjectMap(Model model, Resource subject) {
+    public PredicateObjectMap(Model model, Resource resource) {
         super();
         this.model = model;
-        this.subject = subject;
+        this.resource = resource;
     }
 
-    public RDFNode getPredicate() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.predicate).toSet();
+    public Set<PredicateMap> getPredicateMaps() {
+        Set<PredicateMap> predicateMaps = new HashSet<PredicateMap>();
+        Set<RDFNode> nodes = model.listObjectsOfProperty(resource, RR.predicateMap).toSet();
 
-        if (objects.isEmpty()) {
-            return null;
+        for (RDFNode res : nodes) {
+            predicateMaps.add(new PredicateMap(model, (Resource) res));
         }
 
-        RDFNode node = RRUtils.getFirst(objects);
-
-        return node;
+        return predicateMaps;
     }
 
-    public Set<ObjectMap> getObjectMap() {
-        Set<ObjectMap> result = new HashSet<ObjectMap>();
+    public Set<ObjectMap> getObjectMaps() {
+        Set<ObjectMap> objectMaps = new HashSet<ObjectMap>();
+        Set<RDFNode> nodes = model.listObjectsOfProperty(resource, RR.objectMap).toSet();
 
-        // list all predicate object maps
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.objectMap).toSet();
-
-        for (RDFNode object : objects) {
-            Resource r = (Resource) object;
-            ObjectMap item = new ObjectMap(model, r);
-
-            result.add(item);
-        }
-        return result;
-    }
-
-    public String getDataType() {
-        Set<RDFNode> objects = model.listObjectsOfProperty(subject, RR.datatype).toSet();
-
-        if (objects.isEmpty()) {
-            return null;
+        for (RDFNode res : nodes) {
+            objectMaps.add(new ObjectMap(model, (Resource) res));
         }
 
-        RDFNode node = RRUtils.getFirst(objects);
-        String result = "" + node.asNode().getLiteralValue();
-
-        return result;
-    }
-
-    /**
-     * @return the model
-     */
-    public Model getModel() {
-        return model;
-    }
-
-    /**
-     * @return the subject
-     */
-    public Resource getSubject() {
-        return subject;
+        return objectMaps;
     }
 }
