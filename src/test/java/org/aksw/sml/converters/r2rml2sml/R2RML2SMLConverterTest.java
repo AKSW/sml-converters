@@ -17,15 +17,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Multimap;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.NodeFactory;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 public class R2RML2SMLConverterTest {
 
     private final String prefix = "http://ex.org/";
+    private final String example = "foo";
+    private final String exampleBlankNodeId = "23";
 
     private final String r2rml1 =
             "@prefix rr: <http://www.w3.org/ns/r2rml#> . " +
@@ -221,5 +227,177 @@ public class R2RML2SMLConverterTest {
             assertTrue(tbls.contains(expctdVal.first));
             assertTrue(triplesMaps.contains(expctdVal.second));
         }
+    }
+    
+
+    
+    /*
+     * Considered combinations:
+     * - rr:column
+     * - rr:template
+     * - rr:constant
+     *   - term type rr:IRI
+     *   - term type rr:BlankNoe
+     *   - term type rr:Literal
+     */
+    @Test
+    public void test_getNodeFromTermMap() {
+        String varName = "s1";
+
+        /*
+         * rr:column
+         */
+        Model model = readR2RML(
+                "[ " +
+                    "<" + RR.column + "> \"foo\" ; " +
+                    "<" + RR.termType + "> <" + RR.IRI + "> " +
+                "]");
+        Resource modelSubject = model.listSubjects().toList().get(0);
+        TermMap termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createVariable(varName),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.column + "> \"foo\" ; " +
+                    "<" + RR.termType + "> <" + RR.Literal + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createVariable(varName),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.column + "> \"foo\" ; " +
+                    "<" + RR.termType + "> <" + RR.BlankNode + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createVariable(varName),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        /*
+         * rr:template
+         */
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.template + "> \"foo\" ; " +
+                    "<" + RR.termType + "> <" + RR.IRI + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createVariable(varName),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.template + "> \"foo\" ; " +
+                    "<" + RR.termType + "> <" + RR.BlankNode + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createVariable(varName),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.template + "> \"foo\" ; " +
+                    "<" + RR.termType + "> <" + RR.Literal + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createVariable(varName),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        /*
+         * rr:constant
+         */
+        // Node_URI
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.constant + "> <" + prefix + example + "> ; " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createURI(prefix + example),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+        
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.constant + "> <" + prefix + example + "> ; " +
+                    "<" + RR.termType + "> <" + RR.IRI + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createURI(prefix + example),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.constant + "> \"" + prefix + example + "\" ; " +
+                    "<" + RR.termType + "> <" + RR.IRI + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createURI(prefix + example),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        // blank node
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.constant + "> \"" + exampleBlankNodeId + "\" ; " +
+                    "<" + RR.termType + "> <" + RR.BlankNode + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createAnon(new AnonId(exampleBlankNodeId)),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+
+        // literal (plain wo/ language tag)
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.constant + "> \"" + example + "\" ; " +
+                    "<" + RR.termType + "> <" + RR.Literal + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createLiteral(example),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+        
+        // literal (plain w/ language tag)
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.constant + "> \"" + example + "\" ; " +
+                    "<" + RR.language + "> \"en\" " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createLiteral(example, "en", false),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+        
+        // literal (typed w/ type)
+        model = readR2RML(
+                "[ " +
+                    "<" + RR.constant + "> \"" + example + "\" ; " +
+                    "<" + RR.datatype + "> <" + XSD.xstring + "> " +
+                "]");
+        modelSubject = model.listSubjects().toList().get(0);
+        termMap = new SubjectMap(model, modelSubject);
+        assertEquals(
+                NodeFactory.createLiteral(example, XSDDatatype.XSDstring),
+                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
     }
 }
