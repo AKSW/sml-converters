@@ -58,7 +58,6 @@ public class Run {
             viewDefs.add(syntaxBridge.create(sViewDef));
         }
 
-        System.out.println(viewDefs);
         // call exporter
         Model r2rml = SML2R2RMLConverter.convert(viewDefs);
 
