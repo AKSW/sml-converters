@@ -8,18 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.aksw.sml.converters.vocabs.RR;
-import org.aksw.sparqlify.algebra.sparql.expr.E_StrConcatPermissive;
-import org.aksw.sparqlify.algebra.sql.nodes.SchemaImpl;
 import org.aksw.sparqlify.algebra.sql.nodes.SqlOp;
 import org.aksw.sparqlify.algebra.sql.nodes.SqlOpQuery;
 import org.aksw.sparqlify.algebra.sql.nodes.SqlOpTable;
-import org.aksw.sparqlify.core.SparqlifyConstants;
 import org.aksw.sparqlify.core.domain.input.Mapping;
 import org.aksw.sparqlify.core.domain.input.RestrictedExpr;
 import org.aksw.sparqlify.core.domain.input.VarDefinition;
 import org.aksw.sparqlify.core.domain.input.ViewDefinition;
-import org.aksw.sparqlify.core.domain.input.ViewReference;
-import org.aksw.sparqlify.restriction.RestrictionManagerImpl;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -30,14 +25,11 @@ import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.QuadPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_BNode;
 import com.hp.hpl.jena.sparql.expr.E_Datatype;
-import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.E_Lang;
 import com.hp.hpl.jena.sparql.expr.E_Str;
 import com.hp.hpl.jena.sparql.expr.E_StrDatatype;
@@ -45,8 +37,6 @@ import com.hp.hpl.jena.sparql.expr.E_StrLang;
 import com.hp.hpl.jena.sparql.expr.E_URI;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprFunction;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 /**
@@ -244,9 +234,7 @@ public class R2RML2SMLConverter {
         VarDefinition varDef = new VarDefinition(varToExprs);
 
         QuadPattern quadPattern = buildQuadPattern(viewDefInfo.quadPatternInfo);
-        Map<String, ViewReference> viewReferences = null;
         Mapping mapping = new Mapping(varDef, viewDefInfo.from);
-        RestrictionManagerImpl varRestrictions = new RestrictionManagerImpl();
 
         return new ViewDefinition(viewDefInfo.name, quadPattern, null, mapping, null);
     }
