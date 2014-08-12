@@ -23,6 +23,8 @@ public abstract class TermMap {
     private boolean datatypeChecked;
     private Literal language;
     private boolean languageChecked;
+    
+    private Resource termType = null;
 
     public TermMap(Model model, Resource termMapResource) {
         this.model = model;
@@ -77,13 +79,13 @@ public abstract class TermMap {
 
     public RDFNode getConstantTerm() {
         RDFNode term = RRUtils.getNodeFromSet(model.listObjectsOfProperty(
-                resource, RR.template).toSet());
+                resource, RR.constant).toSet());
         return term;
     }
 
     public Literal getColumnTerm() {
         RDFNode term = RRUtils.getNodeFromSet(model.listObjectsOfProperty(
-                resource, RR.template).toSet());
+                resource, RR.column).toSet());
         return term.asLiteral();
     }
 
@@ -182,5 +184,54 @@ public abstract class TermMap {
     @Override
     public String toString() {
         return resource.toString();
+    }
+
+    /**
+     * FIXME: consider rr:join (if this can be considered as type)
+     */
+    public Resource getTermType() {
+        if (termType == null) {
+
+            /* first check if a term type is set explicitely */
+            Statement termTypeStatement = RRUtils.getStatementFromSetIfExists(model
+                    .listStatements(resource, RR.termType, (RDFNode) null).toSet());
+    
+            if (termTypeStatement != null) {
+                termType = (Resource) termTypeStatement.getObject();
+            } else {
+    
+                /*
+                 * Quote from http://www.w3.org/TR/r2rml/#termtype:
+                 * 
+                 * If the term map does not have a rr:termType property, then
+                 * its term type is:
+                 * - rr:Literal, if it is an object map and at least one of the
+                 *   following conditions is true:
+                 *   - It is a column-based term map. --> a)
+                 *   - It has a rr:language property (and thus a specified
+                 *     language tag). --> b)
+                 *   - It has a rr:datatype property (and thus a specified
+                 *     datatype). --> c)
+                 * - rr:IRI, otherwise. --> d)
+                 */
+                // a)
+                if (isColumnTermMap()) {
+                    termType = RR.Literal;
+        
+                // b)
+                } else if (hasLanguage()) {
+                    termType = RR.Literal;
+        
+                // c)
+                } else if (hasDatatype()) {
+                    termType = RR.Literal;
+        
+                } else {
+                    termType = RR.IRI;
+                }
+            }
+        }
+
+        return termType;
     }
 }
