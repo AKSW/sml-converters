@@ -87,6 +87,8 @@ public class TriplesMap {
      *      rr:objectMap [ rr:constant :SomeClass ] ] ;
      *    ...                                            ]
      * 
+     * TODO: term type...
+     * 
      * @param triplesMap
      * @param statement
      * @return
