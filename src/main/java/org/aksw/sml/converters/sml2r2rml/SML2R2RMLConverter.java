@@ -1,11 +1,13 @@
 package org.aksw.sml.converters.sml2r2rml;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.aksw.sml.converters.errors.SMLVocabException;
 import org.aksw.sml.converters.vocabs.RR;
+import org.aksw.sparqlify.algebra.sparql.expr.E_RdfTerm;
 import org.aksw.sparqlify.algebra.sql.nodes.SqlOpBase;
 import org.aksw.sparqlify.algebra.sql.nodes.SqlOpQuery;
 import org.aksw.sparqlify.algebra.sql.nodes.SqlOpTable;
@@ -16,7 +18,6 @@ import org.aksw.sparqlify.core.domain.input.ViewDefinition;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Blank;
-import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -28,8 +29,8 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprFunction;
 import com.hp.hpl.jena.sparql.expr.FunctionLabel;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
 
 // just needed because I know no better way to let a method return multiple values
 class PredicateAndObject {
@@ -45,7 +46,10 @@ class PredicateAndObject {
 public class SML2R2RMLConverter {
 
     private static int triplesMapIdCounter = 1;
-    private static final String fnSymbolConcat = "concat";
+    private static final BigDecimal BNODE = new BigDecimal(0);
+    private static final BigDecimal URI = new BigDecimal(1);
+    private static final BigDecimal PLAINLITERAL = new BigDecimal(2);
+    private static final BigDecimal TYPEDLITERAL = new BigDecimal(3);
 
 
     /**
@@ -410,328 +414,61 @@ public class SML2R2RMLConverter {
         return results;
     }
 
-    /**
-     * Builds up an R2RML literal string -- the actual mapping value that can be
-     * constructed like this: "http://data.example.com/department/{DEPTNO}" .
-     * This would correspond to the following SML expression:
-     * uri(concat("http://data.example.com/department/", ?DEPTNO))
-     * 
-     * So the given restrictions Collection encompass the following nested
-     * expressions (from outer to inner):
-     * - uri function
-     * - concat function
-     * - String "http://data.example.com/department/", variable DEPTNO
-     * 
-     * This method can be called for all kinds of mappings: rr:subjectMap,
-     * rr:predicateMap and rr:objectMap (but not for rr:predicateObjectMap which
-     * is kind of a container for the rr:predicateMap and rr:objectMap).
-     * 
-     * @param restrictions collection of RestrictedExpr objects containing
-     *      restriction expressions
-     * @return a list of predicates and objects
-     * @throws SMLVocabException 
-	 */
-	private static List<PredicateAndObject> processRestrictions(
-	        Collection<RestrictedExpr> restrictions) throws SMLVocabException {
-        String exprStr = "";
-        String langTag = null;
-        Node_URI type = null;
-        Resource termType = null;
+    private static TermConstructorConverter buildTermConstructorConverter(Expr expr) {
+        TermConstructorConverter tc;
+        E_RdfTerm func = (E_RdfTerm) expr.getFunction();
+        TermConstructorType tcType;
+
+        NodeValueDecimal typeIntNode = (NodeValueDecimal) func.getArgs().get(0);
+        BigDecimal typeInt = typeIntNode.getDecimal();
+
+        if (typeInt.equals(BNODE)) {
+            tcType = TermConstructorType.bNode;
+        } else if (typeInt.equals(URI)) {
+            tcType = TermConstructorType.uri;
+        } else if (typeInt.equals(PLAINLITERAL)) {
+            tcType = TermConstructorType.plainLiteral;
+        } else if (typeInt.equals(TYPEDLITERAL)) {
+            tcType = TermConstructorType.typedLiteral;
+        } else {
+            // fall back
+            tcType = TermConstructorType.plainLiteral;
+        }
+
+        List<Expr> args = func.getArgs();
+        int numArgs = args.size();
+        List<Expr> tcArgs = args.subList(1, numArgs-1);
+        tc = new TermConstructorConverter(tcType, tcArgs);
+
+        return tc;
+    }
+
+    private static List<PredicateAndObject> processRestrictions(
+            Collection<RestrictedExpr> restrictions) {
 
         List<PredicateAndObject> results = new ArrayList<PredicateAndObject>();
 
         for (int i = 0; i < restrictions.size(); i++) {
-
-            Property mapPredicate;
             RestrictedExpr restriction = (RestrictedExpr) restrictions.toArray()[i];
             Expr expression = restriction.getExpr();
+            // TODO: create term type statement
 
-            /*
-             * handle functions:
-             * - plainLiteral (explicitly)
-             * - typedLiteral (explicitly)
-             * - blankNode (explicitly)
-             * - other (generic)
+            if (expression.isFunction() &&
+                    expression
+                            .getFunction()
+                            .getFunctionSymbol()
+                            .equals(new FunctionLabel(
+                                    SparqlifyConstants.rdfTermLabel))) {
+                TermConstructorConverter tcc = buildTermConstructorConverter(expression);
+                Property mapPredicate = tcc.getMapPredicate();
+                Literal mapObject = tcc.getMapObject();
+                results.add(new PredicateAndObject(mapPredicate, mapObject));
+            }
+            /* else: The most outer function *must* be such a generic term
+             * constructor function already handled above. So there is no else
+             * (at least at the moment)
              */
-            if (expression.isFunction()) {
-                exprStr += processRestrExpr(expression);
-
-                // get first argument of the function
-                Expr firstArg = expression.getFunction().getArgs().get(0);
-
-                /*
-                 * plainLiteral
-                 */
-                if (expression.getFunction().getFunctionSymbol().equals(
-                        new FunctionLabel(SparqlifyConstants.plainLiteralLabel))) {
-                    // if the outermost function is plainLiteral( ... ) with...
-                    termType = RR.Literal;
-
-                    if (firstArg.isVariable()) {
-                        // ...a variable as first argument --> rr:column
-                        mapPredicate = RR.column;
-
-                        // Yes, this is  a bit goofy, but I have to strip off the
-                        // curly braces added in the processRestrExpr method before.
-                        // This is necessary because down there I could not check
-                        // if the variable would end up in a rr:template or
-                        // rr:column literal
-                        int strlength = exprStr.length();
-                        exprStr = exprStr.substring(1, strlength - 1);
-
-                    } else if (firstArg.isFunction()) {
-                        // ...a function as first argument --> rr:template
-
-                        /*
-                         * Since the value is defined by the function and is not
-                         * the pure column value, this has to be rr:template.
-                         * This inner function could also work with constants
-                         * which would be OK since rr:template would also fit
-                         * here being more general than rr:constant, which
-                         * would be the clean choice here
-                         */
-                        mapPredicate = RR.template;
-
-                    } else {
-                        // ...a constant --> rr:constant
-                        mapPredicate = RR.constant;
-                    }
-
-                    // get language tag (if set)
-                    List<Expr> funcArgs = expression.getFunction().getArgs();
-
-                    if (funcArgs.size() > 1) {
-                        // there is more than one argument, like in
-                        // plainLiteral(?foo, 'en')
-                        // TODO: check if this is still valid (after adding implicit concat, e.g. plainLiteral('foo', 'bar', 'en'))
-
-                        if (funcArgs.get(1).isConstant() && 
-                                funcArgs.get(1).getConstant().isString()) {
-                            // looks like this could be a language tag
-                            langTag = funcArgs.get(1).getConstant().asString();
-                        }
-                    }
-
-                /*
-                 * typed literal
-                 */
-                } else if (expression.getFunction().getFunctionSymbol().equals(
-                        new FunctionLabel(SparqlifyConstants.typedLiteralLabel))) {
-                    termType = RR.Literal;
-
-                    if (firstArg.isVariable()) {
-                        // rr:column
-                        mapPredicate = RR.column;
-
-                        // Yes, this is  a bit goofy, but I have to strip off the
-                        // curly braces added in the processRestrExpr method before.
-                        // This is necessary because down there I could not check
-                        // if the variable would end up in a rr:template or
-                        // rr:column literal
-                        int strlength = exprStr.length();
-                        exprStr = exprStr.substring(1, strlength - 1);
-
-                    } else if (firstArg.isFunction()) {
-                        // rr:template
-                        mapPredicate = RR.template;
-
-                    } else {
-                        // rr:constant
-                        mapPredicate = RR.constant;
-                    }
-
-                    // get type
-                    List<Expr> funcArgs = expression.getFunction().getArgs();
-
-                    if (funcArgs.size() > 1) {
-                        // there is more than one argument, like in
-                        // typedLiteral(?foo, xsd:date)
-                        if (funcArgs.get(1).isConstant() &&
-                                funcArgs.get(1).getConstant().isIRI()) {
-                            // looks like this could be a type declaration
-                            type = (Node_URI) funcArgs.get(1).getConstant().getNode();
-                        }
-                    }
-
-                /*
-                 * blank node
-                 */
-                } else if (expression.getFunction().getFunctionSymbol().equals(
-                        new FunctionLabel(SparqlifyConstants.blankNodeLabel))) {
-                    termType = RR.BlankNode;
-
-                    mapPredicate = RR.constant;
-                    Resource mapObject = ResourceFactory.createResource();
-                    PredicateAndObject result = new PredicateAndObject(mapPredicate, mapObject);
-                    results.add(result);
-                    results.add(new PredicateAndObject(RR.termType, termType));
-
-                    /*
-                     * It would be
-                     * - wrong going through the build-up process of the literal
-                     *   object
-                     * - useless to go through the type or language tag detection
-                     *   process
-                     * so we get out of this loop here.  
-                     */
-                    continue;
-
-                } else {
-                    // rr:template
-                    if (expression.getFunction().getFunctionSymbol().equals(
-                            new FunctionLabel(SparqlifyConstants.uriLabel))) {
-                        termType = RR.IRI;
-                    }
-                    mapPredicate = RR.template;
-                }
-
-            // There is just a variable or given. (The case of a constant was
-            // already handled above.) Since such expressions
-            // (e.g. ?variable_name=?COUMN) would violate the SML, this branch
-            // should never be reached.
-            } else {
-                throw new SMLVocabException();
-            }
-
-            Literal mapObject = ResourceFactory.createPlainLiteral(exprStr);
-            PredicateAndObject result = new PredicateAndObject(mapPredicate, mapObject);
-            results.add(result);
-
-            if (termType != null) {
-                results.add(new PredicateAndObject(RR.termType, termType));
-            }
-
-            if (langTag != null) {
-                // add sth. like rr:language "en"
-                results.add(new PredicateAndObject(RR.language, ResourceFactory.createPlainLiteral(langTag)));
-
-            } else if (type != null) {
-                PredicateAndObject rrDataType = buildDataTypePredAndObj(type);
-                results.add(rrDataType);
-            }
         }
-
         return results;
-    }
-
-    /**
-     * Builds the predicate and object of a data type definition like
-     * [] rr:dataType xsd:date
-     * 
-     * @param type a Node_URI object containing the type resource URI
-     * @return a PredicateAndObject object containing the predicate
-     *      (rr:dataType) and the object (e.g. xsd:string) of the rr:dataType
-     *      expression
-     */
-    private static PredicateAndObject buildDataTypePredAndObj(Node_URI type) {
-        Resource rrDataTypeObject = ResourceFactory.createResource(type.toString());
-
-        return new PredicateAndObject(RR.datatype, rrDataTypeObject);
-    }
-
-    /**
-     * Processes (at the time of writing some) known functions available in the
-     * SML, variables and constant strings. Since arguments of the considered
-     * function can be functions, variables or constant strings as well, this
-     * method is called recursively to get to the most inner expression and
-     * build up the rest based on that.
-     * 
-     * @param expr
-     *            a restriction expression (com.hp.hpl.jena.sparql.expr.Expr)
-     *            like a function (concat( ... ), uri( ... ), ...) or a variable
-     * @return a String containing the R2RML counterpart of these SML expressions
-     */
-    private static String processRestrExpr(Expr expr) {
-        String exprStr = "";
-
-        /*
-         * functions
-         */
-        if (expr.isFunction()) {
-            ExprFunction func = expr.getFunction();
-            if (func.getFunctionSymbol().equals(
-                    new FunctionLabel(SparqlifyConstants.rdfTermLabel))) {
-
-                func = func.getArg(2).getFunction();
-            }
-
-            // concat( ... )
-            if (func.getFunctionSymbol().equals(new FunctionLabel(fnSymbolConcat))) {
-                List<Expr> args = func.getArgs();
-
-                for (Expr arg : args) {
-                    // explicitely use string representation of IRIs get strings
-                    // without leading and trailing angle brackets
-                    if (arg.isConstant() && arg.toString().startsWith("<")) {
-                        exprStr += arg.getConstant().asString();
-                        continue;
-                    }
-                    exprStr += processRestrExpr(arg);
-                }
-
-            // uri( ... )
-            } else if (func.getFunctionSymbol().equals(
-                    new FunctionLabel(SparqlifyConstants.uriLabel))) {
-                // there should be just one argument here
-                Expr subExpr = func.getArgs().get(0);
-                exprStr += processRestrExpr(subExpr);
-
-            // plainLiteral( ... )
-            } else if (func.getFunctionSymbol().equals(
-                    new FunctionLabel(SparqlifyConstants.plainLiteralLabel))) {
-                // I am only interested in the first argument here, since a
-                // possible second argument containing a language tag is only
-                // of interest, if the plainLiteral is the most outer function
-                // which is handled in a different place.
-                Expr subExpr = func.getArgs().get(0);
-                exprStr += processRestrExpr(subExpr);
-
-            // typedLiteral
-            } else if (func.getFunctionSymbol().equals(
-                    new FunctionLabel(SparqlifyConstants.typedLiteralLabel))) {
-                // As above I am only interested in the first argument here
-                // since the second argument stating which type the first
-                // argument has, should be processed in a different place.
-                Expr subExpr = func.getArgs().get(0);
-                exprStr += processRestrExpr(subExpr);
-            } else {
-                // URL encode
-                // FIXME: no URL encoding is done here!!
-                Expr subExpr = func.getArgs().get(0);
-                exprStr += processRestrExpr(subExpr);
-            }
-
-        /*
-         * variables and strings
-         */
-        } else {
-
-            // strings
-            if (expr.isConstant()) {
-                String constStr = expr.toString();
-
-                if (constStr.startsWith("\"")) {
-                    // strip off the leading and trailing quote
-                    constStr = constStr.substring(1);
-
-                    if (constStr.endsWith("\"")) {
-                        int strLength = constStr.length();
-                        constStr = constStr.substring(0, strLength - 1);
-                    }
-                }
-                exprStr += constStr;
-
-            // variables
-            } else if (expr.isVariable()) {
-                String varStr = expr.toString();
-                // strip off the leading question mark...
-                varStr = varStr.substring(1);
-                // ...and put the value in curly braces
-                varStr = "{" + varStr + "}";
-                exprStr += varStr;
-            }
-        }
-
-        return exprStr;
     }
 }
