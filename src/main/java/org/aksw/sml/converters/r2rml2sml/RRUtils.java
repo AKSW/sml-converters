@@ -69,25 +69,29 @@ public class RRUtils {
     }
 
     public static E_StrConcatPermissive parseTemplate(String str) {
-        //int beginIndex;
         ExprList args = new ExprList();
 
-        String pkUri = str.substring(0, str.indexOf('{')).replace("=","");
-        String pkName = str.substring(str.indexOf('{')+1, str.indexOf('}'));
-        args.add(NodeValue.makeString(pkUri));
-        args.add(new ExprVar(Var.alloc(pkName)));
+        while (!str.isEmpty()) {
+            if (str.contains("{") && str.contains("}")) {
+                int openIdx = str.indexOf('{');
+                int closeIdx = str.indexOf('}');
+                int strLen = str.length();
 
-        str = str.substring(str.indexOf('}')+1);
+                if (openIdx > 0) {
+                    args.add(NodeValue.makeString(str.substring(0, openIdx)));
+                }
 
-        while(!str.equals("") && str.contains("{") && str.contains("}")){
-            pkName = str.substring(str.indexOf('{')+1, str.indexOf('}'));
-            args.add(NodeValue.makeString(pkUri));
-            args.add(new ExprVar(Var.alloc(pkName)));
-            str= str.substring(str.indexOf('}')+1);
+                String varName = str.substring(openIdx+1, closeIdx);
+                args.add(new ExprVar(Var.alloc(varName)));
+
+                str = str.substring(closeIdx+1, strLen);
+
+            } else {
+                args.add(NodeValue.makeString(str));
+                str = "";
+            }
         }
 
-        E_StrConcatPermissive result = new E_StrConcatPermissive(args);
-
-        return result;
+        return new E_StrConcatPermissive(args);
     }
 }
