@@ -1,29 +1,15 @@
-<#TriplesMap2>  <http://www.w3.org/ns/r2rml#logicalTable>
-                [ <http://www.w3.org/ns/r2rml#tableName>
-                          "empl" ] ;
-        <http://www.w3.org/ns/r2rml#predicateObjectMap>
-                [ <http://www.w3.org/ns/r2rml#objectMap>
-                          [ <http://www.w3.org/ns/r2rml#template>
-                                    "{name}23" ] ;
-                  <http://www.w3.org/ns/r2rml#predicateMap>
-                          [ <http://www.w3.org/ns/r2rml#constant>
-                                    <http://xmlns.com/foaf/0.1/name> ]
-                ] ;
-        <http://www.w3.org/ns/r2rml#subjectMap>
-                [ <http://www.w3.org/ns/r2rml#template>
-                          "http://ex.org/employee{emp_id}" ] .
+<#TriplesMap1>
+    <http://www.w3.org/ns/r2rml#logicalTable> [
+            <http://www.w3.org/ns/r2rml#tableName> "empl" ] ;
 
-<#TriplesMap1>  <http://www.w3.org/ns/r2rml#logicalTable>
-                [ <http://www.w3.org/ns/r2rml#tableName>
-                          "empl" ] ;
-        <http://www.w3.org/ns/r2rml#predicateObjectMap>
-                [ <http://www.w3.org/ns/r2rml#objectMap>
-                          [ <http://www.w3.org/ns/r2rml#constant>
-                                    <http://ex.org/Employee> ] ;
-                  <http://www.w3.org/ns/r2rml#predicateMap>
-                          [ <http://www.w3.org/ns/r2rml#constant>
-                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ]
-                ] ;
-        <http://www.w3.org/ns/r2rml#subjectMap>
-                [ <http://www.w3.org/ns/r2rml#template>
-                          "http://ex.org/employee{emp_id}" ] .
+    <http://www.w3.org/ns/r2rml#subjectMap> [
+            <http://www.w3.org/ns/r2rml#template> "http://ex.org/employee{emp_id}" ;
+            <http://www.w3.org/ns/r2rml#class> <http://ex.org/Employee>  ] ;
+
+    <http://www.w3.org/ns/r2rml#predicateObjectMap> [
+            <http://www.w3.org/ns/r2rml#predicate> <http://xmlns.com/foaf/0.1/name> ;
+
+            <http://www.w3.org/ns/r2rml#objectMap> [
+                    <http://www.w3.org/ns/r2rml#template> "{name}23" ] ] .
+
+
