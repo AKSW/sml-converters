@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.aksw.sml.converters.errors.SMLVocabException;
+import org.aksw.sml.converters.r2rml2sml.QuadPatternInfo;
 import org.aksw.sml.converters.vocabs.RR;
 import org.aksw.sparqlify.algebra.sparql.expr.E_RdfTerm;
 import org.aksw.sparqlify.algebra.sql.nodes.SqlOpBase;
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
 class PredicateAndObject {
     Property predicate;
     RDFNode object;
-    
+
     PredicateAndObject(Property predicate, RDFNode object) {
         this.predicate = predicate;
         this.object = object;
@@ -54,10 +55,10 @@ public class SML2R2RMLConverter {
 
     /**
      * The actual export method returning an RDF model
-     * 
+     *
      * @return a com.hp.hpl.jena.rdf.model.Model representing the R2RML
      *     structure
-     * @throws SMLVocabException 
+     * @throws SMLVocabException
      */
     public static Model convert(final Collection<ViewDefinition> viewDefs) throws SMLVocabException {
         Model r2rml = ModelFactory.createDefaultModel();
@@ -70,14 +71,14 @@ public class SML2R2RMLConverter {
 
     /**
      * Derives an R2RML graph from the given SML view definition input
-     * 
+     *
      * @param viewDef a SML view definition
      * @param r2rml a jena model representing the R2RML structure that will be built up
-     * @throws SMLVocabException 
+     * @throws SMLVocabException
      */
     private static void exportViewDef(ViewDefinition viewDef, Model r2rml) throws SMLVocabException {
         SqlOpBase relation = (SqlOpBase) viewDef.getMapping().getSqlOp();
-        List<Quad> patterns = (List<Quad>) viewDef.getTemplate().getList();
+        List<Quad> patterns = viewDef.getTemplate().getList();
         VarDefinition varDefs = viewDef.getMapping().getVarDefinition();
 
         for (Quad pattern : patterns) {
@@ -88,25 +89,25 @@ public class SML2R2RMLConverter {
     /**
      * Builds up the RDF model "r2ml" representing the R2RML structure of the
      * given SML definitions. At this point only parts of the SML view
-     * definitions are considered. These are so called patterns representing
-     * quads (graph, subject, predicate, object) that can be valid resources
-     * or variables with certain restrictions derived from SML expressions like
+     * definitions are considered. These are  quads (graph, subject, predicate,
+     * object) that can be valid resources or variables with certain
+     * restrictions derived from SML expressions like
      * "uri(concat("http://panlex.org/plx/", ?li))" meaning that the actual
      * value is constructed by creating a URI based on the concatenation of
      * "http://panlex.org/plx/" and the value of the "li" column in the current
      * line of the table and database at hand.
-     * 
+     *
      * @param r2rml the target jena model
-     * @param pattern a quad that may contain variables in the subject,
+     * @param quad a quad that may contain variables in the subject,
      *      predicate or object position
      * @param relation the considered database table or constructed logical
      *      relation defined by a query or view
      * @param varDefs the construction definition of the target value based in
      *      the actual database value and some additional data like prefix
      *      strings or certain functions like uri( ... )
-     * @throws SMLVocabException 
+     * @throws SMLVocabException
      */
-    private static void exportPattern(Quad pattern, SqlOpBase relation,
+    private static void exportPattern(Quad quad, SqlOpBase relation,
             VarDefinition varDefs, Model r2rml) throws SMLVocabException {
         /*
          * Just some hints concerning the variable names: I will try to be as
@@ -121,7 +122,7 @@ public class SML2R2RMLConverter {
          * - I will determine a scope based on the its subject, so if the
          *   subject is "foo", "fooSubject" is the subject in the "foo" scope.
          *   "fooPredicate" is the predicate in the "foo" scope and so on.
-         * - since there may be several predicates and objects I will prefix a
+         * - since there may be several predicates and objects I will append a
          *   hint stating the special use of the considered part of a triple,
          *   so "fooPredicate_bar" is the predicate in the "foo" scope to
          *   define "bar"
@@ -148,7 +149,7 @@ public class SML2R2RMLConverter {
         /*
          * subject map
          */
-        Node subjectMapObject_templColOrConst = pattern.getSubject();
+        Node subjectMapObject_templColOrConst = quad.getSubject();
         List<Statement> triplesMapStatement_subjectMaps = buildTermMapStatements(
                 subjectMapObject_templColOrConst, varDefs, r2rml);
 
@@ -166,18 +167,31 @@ public class SML2R2RMLConverter {
             Property triplesMapPredicate_subjectMap = RR.subjectMap;
             // []
             RDFNode triplesMapObject_subjectMap =
-                    (RDFNode) triplesMapStatement_subjectMaps.get(0).getSubject();
+                    triplesMapStatement_subjectMaps.get(0).getSubject();
             // <#TriplesMap2> rr:subjectMap []
             Statement subjectMapTriple = r2rml.createStatement(
                     triplesMapSubject, triplesMapPredicate_subjectMap,
                     triplesMapObject_subjectMap);
+
+            // add graph definitions
+            Node graph = quad.getGraph();
+            if (!graph.equals(QuadPatternInfo.defaultGraph)) {
+                // build the actual graph map
+                List<Statement> graphStatements = buildTermMapStatements(graph,
+                        varDefs, r2rml);
+                r2rml.add(graphStatements);
+                // connect it to the subject
+                Resource graphMapSubject = graphStatements.get(0).getSubject();
+                Statement graphMapStatement = ResourceFactory.createStatement(triplesMapObject_subjectMap.asResource(), RR.graphMap, graphMapSubject);
+                r2rml.add(graphMapStatement);
+            }
             r2rml.add(subjectMapTriple);
         }
 
         /*
          * predicate map
          */
-        Node predicateMap_templColOrConst = pattern.getPredicate();
+        Node predicateMap_templColOrConst = quad.getPredicate();
         List<Statement> prediacteMapStatements = buildTermMapStatements(
                 predicateMap_templColOrConst, varDefs, r2rml);
 
@@ -191,7 +205,7 @@ public class SML2R2RMLConverter {
         /*
          * object map
          */
-        Node objectMap_templColOrConst = pattern.getObject();
+        Node objectMap_templColOrConst = quad.getObject();
         List<Statement> objectMapStatements = buildTermMapStatements(
                 objectMap_templColOrConst, varDefs, r2rml);
 
@@ -221,7 +235,7 @@ public class SML2R2RMLConverter {
         Property predicateObjectMapPredicate_predicateMap = RR.predicateMap;
         // [#2]
         RDFNode predicateObjectMapObject_predicateMap =
-                (RDFNode) prediacteMapStatements.get(0).getSubject();
+                prediacteMapStatements.get(0).getSubject();
 
         Statement predicateObjectMapStatement_predicateMap = r2rml.createStatement(
                 triplesMapObject_predicateObjectMap,
@@ -234,7 +248,7 @@ public class SML2R2RMLConverter {
         Property prediacteObjectMapPrediacte_objectMap = RR.objectMap;
         // [#3]
         RDFNode prediacteObjectMapObject_objectMap =
-                (RDFNode) objectMapStatements.get(0).getSubject();
+                objectMapStatements.get(0).getSubject();
 
         Statement predicateObjectMapStatement_objectMap = r2rml.createStatement(
                 triplesMapObject_predicateObjectMap,
@@ -258,7 +272,7 @@ public class SML2R2RMLConverter {
      * Builds up the one triple that states where the actual data for the target
      * mapping comes from. Such a source can be simply a database table or an
      * SQL query.
-     * 
+     *
      * @param relation the data source (table name or SQL query)
      * @param r2rml the target Jena model
      * @return the whole Statement stating where the data comes from,
@@ -288,7 +302,7 @@ public class SML2R2RMLConverter {
 
         } else {
             // it's not possible
-            throw new SMLVocabException(); 
+            throw new SMLVocabException();
         }
 
         Statement logicalTblStatement = r2rml.createStatement(
@@ -301,7 +315,7 @@ public class SML2R2RMLConverter {
      * Builds up statements like
      * [] rr:template "http://data.example.com/department/{DEPTNO}" or
      * [] rr:class ex:Department and returns them as a Statement List.
-     * 
+     *
      * @param mappingData the target that should be mapped to relational
      *     structures (subject, predicate or object)
      * @param varDefs the construction definition of the target value based in
@@ -309,7 +323,7 @@ public class SML2R2RMLConverter {
      *     strings or certain functions like uri( ... )
      * @param r2rml the target Jena model
      * @return a List<Statement> containing all the term map statements
-     * @throws SMLVocabException 
+     * @throws SMLVocabException
      */
     private static List<Statement> buildTermMapStatements(Node mappingData,
             VarDefinition varDefs, Model r2rml) throws SMLVocabException {
@@ -387,14 +401,14 @@ public class SML2R2RMLConverter {
 
                 mapObject = ResourceFactory.createPlainLiteral(mappingData.getLiteral().toString(false));
 
-            } else { 
+            } else {
                 // blank node
                 /*
                  * According to the current (2014-07-26) Jena javadoc a
                  * concrete node can either be a URI, literal or a blank node.
                  * So what's left here is the blank node case. This is handled
                  * using the blank node id as actual term map value and adding
-                 * the rr:termType rr:BlankNode 
+                 * the rr:termType rr:BlankNode
                  */
                 // first add the term type statement -- the actual term map
                 // value statement will be added generically
