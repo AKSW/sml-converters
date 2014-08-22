@@ -67,7 +67,7 @@ public class R2RML2SMLConverter {
      * - the table type (table or query)
      * - the actual table expression (table name or query expression)
      * and adds this information to the view definition info container object
-     * 
+     *
      * @param tbl the triples map's logical table object
      * @param viewDefInfo a container holding gathered information to
      *      instantiate a ViewDefinition object later
@@ -130,30 +130,12 @@ public class R2RML2SMLConverter {
     }
 
     /**
-     * Extracts information from a given subject map and feeds view definition
-     * info object (which is used to create a view definition later)
-     * @param subjectMap the considered subject map
-     * @param varName a variable name that can be used in case the subject map
-     *      is variable
-     * @param viewDefInfo a container holding gathered information to
-     *      instantiate a ViewDefinition object later
-     */
-    protected static void extractInfoFromSubjectMap(TermMap subjectMap,
-            String varName, ViewDefinitionInfo viewDefInfo) {
-        Node subject = createNodeFromTermMap(subjectMap, varName);
-        viewDefInfo.quadPatternInfo.addSubject(subject);
-        if (subject.isVariable()) {
-            viewDefInfo.termConstructors.put(subject, buildTermConstructor(subjectMap));
-        }
-    }
-
-    /**
      * Returns a node used in the SML view definition's quad pattern. Such a
      * node can be either a variable, a URI, a blank node or a literal node:
-     * - variable --> if rr:constant is used in the term map 
+     * - variable --> if rr:constant is used in the term map
      * - URI --> if rr:constant is not used and term type is URI
      * - blank node --> if rr:constant is not used and term type is rr:BlankNode
-     * - literal --> if rr:constant is not used and term 
+     * - literal --> if rr:constant is not used and term
      */
     protected static Node createNodeFromTermMap(TermMap termMap, String varName) {
         Node node = null;
