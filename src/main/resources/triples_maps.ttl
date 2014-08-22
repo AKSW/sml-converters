@@ -4,7 +4,8 @@
 
     <http://www.w3.org/ns/r2rml#subjectMap> [
             <http://www.w3.org/ns/r2rml#template> "http://ex.org/employee{emp_id}" ;
-            <http://www.w3.org/ns/r2rml#class> <http://ex.org/Employee>  ] ;
+            <http://www.w3.org/ns/r2rml#class> <http://ex.org/Employee>  ;
+            <http://www.w3.org/ns/r2rml#graph> <http://ex.org/graph01> ] ;
 
     <http://www.w3.org/ns/r2rml#predicateObjectMap> [
             <http://www.w3.org/ns/r2rml#predicate> <http://xmlns.com/foaf/0.1/name> ;
@@ -13,3 +14,20 @@
                     <http://www.w3.org/ns/r2rml#template> "{name}23" ] ] .
 
 
+<#TriplesMap2>
+    <http://www.w3.org/ns/r2rml#logicalTable> [
+            <http://www.w3.org/ns/r2rml#tableName> "dept" ] ;
+
+    <http://www.w3.org/ns/r2rml#subjectMap> [
+            <http://www.w3.org/ns/r2rml#template> "http://ex.org/dep{id}" ] ;
+
+    <http://www.w3.org/ns/r2rml#predicateObjectMap> [
+            <http://www.w3.org/ns/r2rml#graph> <http://ex.org/graph02> ;
+            <http://www.w3.org/ns/r2rml#predicate> <http://xmlns.com/foaf/0.1/name> ;
+            <http://www.w3.org/ns/r2rml#objectMap> [
+                    <http://www.w3.org/ns/r2rml#column> "name" ] ] ;
+
+    <http://www.w3.org/ns/r2rml#predicateObjectMap> [
+            <http://www.w3.org/ns/r2rml#graph> <http://ex.org/graph03> ;
+            <http://www.w3.org/ns/r2rml#predicate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ;
+            <http://www.w3.org/ns/r2rml#object> <http://ex.org/Department> ] .
