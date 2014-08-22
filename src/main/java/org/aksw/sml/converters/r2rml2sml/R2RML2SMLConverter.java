@@ -41,10 +41,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 /**
  * TODO: handle graphs  #6
- * TODO: normalize rr:graph --> rr:graphMap  #3
- * TODO: normalize rr:subject --> rr:subjectMap  #3
- * TODO: normalize rr:predicate --> rr:predicateMap  #3
- * TODO: normalize rr:object --> rr:objectMap  #3
  * @author patrick
  *
  */

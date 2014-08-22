@@ -12,8 +12,6 @@ import java.util.Set;
 
 import org.aksw.commons.collections.Pair;
 import org.aksw.sml.converters.vocabs.RR;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Multimap;
@@ -39,7 +37,7 @@ public class R2RML2SMLConverterTest {
             ":TriplesMap1 " +
                 "a rr:TriplesMap ; " +
                 "rr:logicalTable [ rr:tableName \"employee\" ] ; " +
-                "rr:subject  :sth ; " +
+                "rr:subject :sth ; " +
                 "rr:predicateObjectMap [ " +
                     "rr:predicate :pred1 ; " +
                     "rr:object :sthElse " +
@@ -93,14 +91,6 @@ public class R2RML2SMLConverterTest {
                     "rr:object :sthCompletelyDifferent " +
                 "] .";
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
     private Model readR2RML(String r2rmlString) {
         Reader r2rmlRead = new StringReader(r2rmlString);
         Model r2rml = ModelFactory.createDefaultModel();
@@ -139,7 +129,7 @@ public class R2RML2SMLConverterTest {
         R2RMLSpec spec = new R2RMLSpec(r2rml);
 
         List<Pair<LogicalTable, TriplesMap>> expctdLtTmEntries =
-                new ArrayList<Pair<LogicalTable,TriplesMap>>();
+                new ArrayList<Pair<LogicalTable, TriplesMap>>();
 
         // entry 1
         Resource expectedTMSubject1 = ResourceFactory.createResource(prefix + "TriplesMap2");
@@ -228,9 +218,7 @@ public class R2RML2SMLConverterTest {
             assertTrue(triplesMaps.contains(expctdVal.second));
         }
     }
-    
 
-    
     /*
      * Considered combinations:
      * - rr:column

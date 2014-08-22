@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-public abstract class TermMap {
+public class TermMap {
 
     protected Model model;
     protected Resource resource;
