@@ -244,7 +244,7 @@ public class R2RML2SMLConverterTest {
         TermMap termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createVariable(varName),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         model = readR2RML(
                 "[ " +
@@ -255,7 +255,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createVariable(varName),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         model = readR2RML(
                 "[ " +
@@ -266,7 +266,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createVariable(varName),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         /*
          * rr:template
@@ -280,7 +280,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createVariable(varName),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         model = readR2RML(
                 "[ " +
@@ -291,7 +291,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createVariable(varName),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         model = readR2RML(
                 "[ " +
@@ -302,7 +302,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createVariable(varName),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         /*
          * rr:constant
@@ -316,8 +316,8 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createURI(prefix + example),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
-        
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
+
         model = readR2RML(
                 "[ " +
                     "<" + RR.constant + "> <" + prefix + example + "> ; " +
@@ -327,7 +327,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createURI(prefix + example),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         model = readR2RML(
                 "[ " +
@@ -338,7 +338,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createURI(prefix + example),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         // blank node
         model = readR2RML(
@@ -350,7 +350,7 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createAnon(new AnonId(exampleBlankNodeId)),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
 
         // literal (plain wo/ language tag)
         model = readR2RML(
@@ -362,8 +362,8 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createLiteral(example),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
-        
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
+
         // literal (plain w/ language tag)
         model = readR2RML(
                 "[ " +
@@ -374,8 +374,8 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createLiteral(example, "en", false),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
-        
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
+
         // literal (typed w/ type)
         model = readR2RML(
                 "[ " +
@@ -386,6 +386,6 @@ public class R2RML2SMLConverterTest {
         termMap = new SubjectMap(model, modelSubject);
         assertEquals(
                 NodeFactory.createLiteral(example, XSDDatatype.XSDstring),
-                R2RML2SMLConverter.createNodeFromTermMap(termMap, varName));
+                R2RML2SMLConverter.buildNodeFromTermMap(termMap, varName));
     }
 }

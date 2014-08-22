@@ -137,7 +137,7 @@ public class R2RML2SMLConverter {
      * - blank node --> if rr:constant is not used and term type is rr:BlankNode
      * - literal --> if rr:constant is not used and term
      */
-    protected static Node createNodeFromTermMap(TermMap termMap, String varName) {
+    protected static Node buildNodeFromTermMap(TermMap termMap, String varName) {
         Node node = null;
 
         // var
@@ -173,14 +173,13 @@ public class R2RML2SMLConverter {
                 } else if (termMap.hasLanguage()) {
                     String lang = termMap.getLanguage().getLexicalForm();
                     node = NodeFactory.createLiteral(termValue, lang, false);
-                
+
                 // plain without language tag
                 } else {
                     node = NodeFactory.createLiteral(termValue);
                 }
             }
         }
-
         return node;
     }
 
@@ -196,13 +195,12 @@ public class R2RML2SMLConverter {
                 }
             }
         }
-
         return quadPattern;
     }
 
     protected static ViewDefinition buildViewDefFromInfo(ViewDefinitionInfo viewDefInfo) {
         Multimap<Var, RestrictedExpr> varToExprs = HashMultimap.create();
-        
+
         for (Node node : viewDefInfo.termConstructors.keySet()) {
             Var var = Var.alloc(((Node_Variable) node).getName());
             RestrictedExpr restr = new RestrictedExpr(viewDefInfo.termConstructors.get(node));
@@ -233,14 +231,14 @@ public class R2RML2SMLConverter {
             if (viewDefName != "") viewDefName = viewDefName + "_";
             viewDefName = viewDefName +
                     viewDefNameService.getNameFromUri(triplesMap.getResource().getURI());
-            
+
             /* create a new view definition info object which is fed with all
              * the information needed to instantiate a ViewDefinition object
              * later
              */
             viewDefInfo = new ViewDefinitionInfo();
             viewDefInfo.name = viewDefName;
-            
+
             /*
              * The plan:
              * 1) Extract all information from
@@ -259,7 +257,7 @@ public class R2RML2SMLConverter {
             subjVarNameCounter++;
 
             SubjectMap subjectMap = triplesMap.getSubjectMap();
-            Node subject = createNodeFromTermMap(subjectMap, subjVarName);
+            Node subject = buildNodeFromTermMap(subjectMap, subjVarName);
             viewDefInfo.quadPatternInfo.addSubject(subject);
 
             if (subject.isVariable()) {
@@ -272,13 +270,13 @@ public class R2RML2SMLConverter {
                  * Just to remember (http://www.w3.org/TR/r2rml/#dfn-predicate-object-map):
                  * A predicate-object map is represented by a resource that
                  * references the following other resources:
-                 * 
+                 *
                  * - One or more predicate maps. Each of them may be specified
                  *   in one of two ways:
                  *   1) using the rr:predicateMap property, whose value MUST be
                  *      a predicate map, or
                  *   2) using the constant shortcut property rr:predicate.
-                 * 
+                 *
                  * - One or more object maps or referencing object maps. Each
                  *   of them may be specified in one of two ways:
                  *   1) using the rr:objectMap property, whose value MUST be
@@ -297,13 +295,13 @@ public class R2RML2SMLConverter {
                     String predVarName = predicateVarNamePrefix + predVarNameCounter;
                     predVarNameCounter++;
 
-                    Node predicate = createNodeFromTermMap(predicateMap, predVarName);
+                    Node predicate = buildNodeFromTermMap(predicateMap, predVarName);
                     viewDefInfo.quadPatternInfo.addPredicateToSubject(subject, predicate);
 
                     if (predicate.isVariable()) {
                         viewDefInfo.termConstructors.put(predicate, buildTermConstructor(predicateMap));
                     }
-                    
+
 
                     int objVarNameCounter = 1;
 
@@ -311,7 +309,7 @@ public class R2RML2SMLConverter {
                         String objectVarName = objectvarNamePrefix + objVarNameCounter;
                         objVarNameCounter++;
 
-                        Node object = createNodeFromTermMap(objectMap, objectVarName);
+                        Node object = buildNodeFromTermMap(objectMap, objectVarName);
                         viewDefInfo.quadPatternInfo.addObjectToSubjectPredicate(subject, predicate, object);
 
                         if (object.isVariable()) {
@@ -337,7 +335,7 @@ public class R2RML2SMLConverter {
         Set<LogicalTable> referencedTables = tbl2TM.keySet();
         for (LogicalTable tbl : referencedTables) {
             Collection<TriplesMap> tMaps = tbl2TM.get(tbl);
-            
+
             ViewDefinition viewDef = buildViewDef(tbl, tMaps);
             viewDefs.add(viewDef);
         }
@@ -348,13 +346,13 @@ public class R2RML2SMLConverter {
     @Deprecated
     public static Map<String, ViewDefinition> convert2NameHash(Model r2rmlMappings) {
         Map<String, ViewDefinition> nameViewDefs = new HashMap<String, ViewDefinition>();
-        
+
         List<ViewDefinition> viewDefs = convert(r2rmlMappings);
-        
+
         for (ViewDefinition viewDef : viewDefs) {
             nameViewDefs.put(viewDef.getName(), viewDef);
         }
-        
+
         return nameViewDefs;
     }
 }
