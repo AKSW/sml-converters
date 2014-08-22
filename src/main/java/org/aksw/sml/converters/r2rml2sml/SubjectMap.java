@@ -34,4 +34,17 @@ public class SubjectMap extends TermMap {
 
         return node;
     }
+
+    public List<TermMap> getGraphMaps() {
+        List<TermMap> graphMaps = new ArrayList<TermMap>();
+        NodeIterator graphMapNodesIt = model.listObjectsOfProperty(resource, RR.graphMap);
+
+        while (graphMapNodesIt.hasNext()) {
+            RDFNode graphMapNode = graphMapNodesIt.next();
+            TermMap graphMap = new TermMap(model, graphMapNode.asResource());
+            graphMaps.add(graphMap);
+        }
+
+        return graphMaps;
+    }
 }

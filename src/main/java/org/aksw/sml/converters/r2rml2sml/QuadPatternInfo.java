@@ -1,9 +1,7 @@
 package org.aksw.sml.converters.r2rml2sml;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,156 +11,91 @@ import com.hp.hpl.jena.sparql.core.Quad;
 public class QuadPatternInfo {
     public static final Node defaultGraph = Quad.defaultGraphNodeGenerated;
 
-    private Map<Node, List<SubjectPredicatesObjects>> quads;
-    
+    private final Map<Node, Set<PredicatesObjects>> triples;
+    private final Map<Node, Set<Node>> subjectGraphs;
+    private final Map<PredicatesObjects, Set<Node>> predObjGraphs;
+
     QuadPatternInfo() {
-        quads = new HashMap<Node, List<SubjectPredicatesObjects>>();
-        this.addGraph(defaultGraph);
-    }
-    
-    public void addGraph(Node graph) {
-        quads.put(graph, new ArrayList<SubjectPredicatesObjects>()); 
+        triples = new HashMap<Node, Set<PredicatesObjects>>();
+        subjectGraphs = new HashMap<Node, Set<Node>>();
+        predObjGraphs = new HashMap<PredicatesObjects, Set<Node>>();
     }
 
     /**
      * Adds a new subject to the quad pattern info structure using the default
      * graph
-     * 
+     *
      * @param subject the subject node
      */
     public void addSubject(Node subject) {
         addSubjectToGraph(defaultGraph, subject);
     }
 
-    public void addSubjectToGraph(Node graph, Node subject) {
-        SubjectPredicatesObjects newSubject = new SubjectPredicatesObjects(subject);
-        quads.get(graph).add(newSubject);
-    }
-
-    public void addPredicateToGraphSubject(Node graph, Node subject, Node predicate) {
-        for (SubjectPredicatesObjects spo : quads.get(graph)) {
-            if (spo.getSubject().equals(subject)) {
-                spo.addPredicate(predicate);
-                break;
-            }
+    public void addSubjectToGraph(Node subject, Node graph) {
+        if (!subjectGraphs.containsKey(subject)) {
+            subjectGraphs.put(subject, new HashSet<Node>());
         }
+        subjectGraphs.get(subject).add(graph);
     }
 
-    /**
-     * Adds a new predicate to a subject of a quad using the default graph
-     */
-    public void addPredicateToSubject(Node subject, Node predicate) {
-        addPredicateToGraphSubject(defaultGraph, subject, predicate);
-    }
-
-    public void addObjectToGraphSubjectPrediacte(Node graph, Node subject,
-            Node predicate, Node object) {
-
-        for (SubjectPredicatesObjects spo : quads.get(graph)) {
-            if (spo.getSubject().equals(subject)) {
-                PredicateObjects po = spo.getPredicateObjects(predicate);
-                po.addObject(object);
-            }
+    public void addPredicatesObjectsToGraph(PredicatesObjects pos, Node graph) {
+        if (!predObjGraphs.containsKey(pos)){
+            predObjGraphs.put(pos, new HashSet<Node>());
         }
+        predObjGraphs.get(pos).add(graph);
     }
 
-    public void addObjectToSubjectPredicate(Node subject, Node predicate, Node object) {
-        addObjectToGraphSubjectPrediacte(defaultGraph, subject, predicate, object);
-    }
-
-    public Set<Node> getGraphs() {
-        return quads.keySet();
-    }
-
-    public Set<Node> getSubjectsOfGraph(Node graph) {
-        Set<Node> subjects = new HashSet<Node>();
-        for (SubjectPredicatesObjects subjectPredicatesObjects : quads.get(graph)) {
-            subjects.add(subjectPredicatesObjects.getSubject());
+    public void addPredicatesObjectsToSubject(PredicatesObjects pos, Node subject) {
+        if (!triples.containsKey(subject)) {
+            triples.put(subject, new HashSet<PredicatesObjects>());
         }
-        
-        return subjects;
-    }
-    
-    public Set<Node> getPredicateOfGraphSubject(Node graph, Node subject) {
-        Set<Node> predicates = new HashSet<Node>();
-
-        for (SubjectPredicatesObjects subjectPredicatesObjects : quads.get(graph)) {
-            if (subjectPredicatesObjects.getSubject().equals(subject)) {
-                for ( PredicateObjects po : subjectPredicatesObjects.getPredicateObjects()) {
-                    predicates.add(po.getPredicate());
-                }
-            }
-        }
-
-        return predicates;
+        triples.get(subject).add(pos);
     }
 
-    public Set<Node> getObjectOfGraphSubjectPredicate(Node graph, Node subject, Node predicate) {
-        Set<Node> objects = new HashSet<Node>();
+    public Set<Node> getSubjects() {
+        return triples.keySet();
+    }
 
-        for (SubjectPredicatesObjects spo : quads.get(graph)) {
-            if (spo.getSubject().equals(subject)) {
-                for ( PredicateObjects po : spo.getPredicateObjects()) {
-                    if (po.getPredicate().equals(predicate)) {
-                        for (Node object : po.getObjects()) {
-                            objects.add(object);
-                        }
-                    }
-                }
-            }
-        }
+    public Set<Node> getGraphsForSubject(Node subject) {
+        Set<Node> subjGraphs = subjectGraphs.get(subject);
 
-        return objects;
+        if (subjGraphs == null) { subjGraphs = new HashSet<Node>(); }
+
+        return subjGraphs;
+    }
+
+    public Set<PredicatesObjects> getPredicatesObjectsForSubject(Node subject) {
+        return triples.get(subject);
+    }
+
+    public Set<Node> getGraphsForPredicatesObjects(PredicatesObjects pos) {
+        Set<Node> poGraphs = predObjGraphs.get(pos);
+
+        if (poGraphs == null) { poGraphs = new HashSet<Node>(); }
+
+        return poGraphs;
     }
 }
 
-class SubjectPredicatesObjects {
-    private Node subject;
-    private Set<PredicateObjects> predicateObjects;
+class PredicatesObjects {
+    private final Set<Node> predicates;
+    private final Set<Node> objects;
 
-    SubjectPredicatesObjects(Node subject) {
-        this.subject = subject;
-        predicateObjects = new HashSet<PredicateObjects>();
+    PredicatesObjects() {
+        predicates = new HashSet<Node>();
+        objects = new HashSet<Node>();
     }
 
     void addPredicate(Node predicate) {
-        PredicateObjects pred = new PredicateObjects(predicate);
-        predicateObjects.add(pred);
-    }
-
-    Node getSubject() {
-        return subject;
-    }
-
-    PredicateObjects getPredicateObjects(Node predicate) {
-        for (PredicateObjects po : predicateObjects) {
-            if (po.getPredicate().equals(predicate)) {
-                return po;
-            }
-        }
-        return null;
-    }
-
-    Set<PredicateObjects> getPredicateObjects() {
-        return predicateObjects;
-    }
-}
-
-class PredicateObjects {
-    private Node predicate;
-    private Set<Node> objects;
-
-    PredicateObjects(Node predicate) {
-        this.predicate = predicate;
-        objects = new HashSet<Node>();
+        predicates.add(predicate);
     }
 
     void addObject(Node object) {
         objects.add(object);
     }
 
-    Node getPredicate() {
-        return predicate;
+    Set<Node> getPredicates() {
+        return predicates;
     }
 
     Set<Node> getObjects() {

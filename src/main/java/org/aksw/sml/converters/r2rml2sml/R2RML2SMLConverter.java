@@ -47,6 +47,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 public class R2RML2SMLConverter {
     private static ViewDefNameService viewDefNameService = new ViewDefNameService();
     // will be used to generate SML quad pattern variables like ?s1, ?s2 etc
+    private static final String graphVarNamePrefix = "g";
     private static final String subjectVarNamePrefix = "s";
     private static final String predicateVarNamePrefix = "p";
     private static final String objectvarNamePrefix = "o";
@@ -186,11 +187,22 @@ public class R2RML2SMLConverter {
     protected static QuadPattern buildQuadPattern(QuadPatternInfo quadPatternInfo) {
         QuadPattern quadPattern = new QuadPattern();
 
-        for (Node graph : quadPatternInfo.getGraphs()) {
-            for (Node subject : quadPatternInfo.getSubjectsOfGraph(graph)) {
-                for (Node predicate : quadPatternInfo.getPredicateOfGraphSubject(graph, subject)) {
-                    for (Node object : quadPatternInfo.getObjectOfGraphSubjectPredicate(graph, subject, predicate)) {
-                        quadPattern.add(new Quad(graph, subject, predicate, object));
+        for (Node subject : quadPatternInfo.getSubjects()) {
+            Set<Node> subjGraphs = quadPatternInfo.getGraphsForSubject(subject);
+
+            for (PredicatesObjects pos : quadPatternInfo.getPredicatesObjectsForSubject(subject)) {
+                Set<Node> poGraphs = quadPatternInfo.getGraphsForPredicatesObjects(pos);
+                poGraphs.addAll(subjGraphs);
+                if (poGraphs.isEmpty()) {
+                    poGraphs.add(QuadPatternInfo.defaultGraph);
+                };
+
+                for (Node predicate : pos.getPredicates()) {
+                    for (Node object : pos.getObjects()) {
+                        for (Node graph : poGraphs) {
+                            Quad quad = new Quad(graph, subject, predicate, object);
+                            quadPattern.add(quad);
+                        }
                     }
                 }
             }
@@ -218,6 +230,7 @@ public class R2RML2SMLConverter {
     protected static ViewDefinition buildViewDef(LogicalTable tbl, Collection<TriplesMap> trplsMaps) {
         String viewDefName = "";
 
+        int graphVarNameCounter = 1;
         int subjVarNameCounter = 1;
         ViewDefinitionInfo viewDefInfo = null;
 
@@ -258,7 +271,23 @@ public class R2RML2SMLConverter {
 
             SubjectMap subjectMap = triplesMap.getSubjectMap();
             Node subject = buildNodeFromTermMap(subjectMap, subjVarName);
-            viewDefInfo.quadPatternInfo.addSubject(subject);
+
+            // get graphs if set
+            List<TermMap> graphMaps = subjectMap.getGraphMaps();
+
+            if (!graphMaps.isEmpty()) {
+                for (TermMap graphMap : graphMaps) {
+                    String varName = graphVarNamePrefix + graphVarNameCounter;
+                    graphVarNameCounter++;
+
+                    Node graph = buildNodeFromTermMap(graphMap, varName);
+                    if (graph.isVariable()) {
+                        viewDefInfo.termConstructors.put(graph,
+                                buildTermConstructor(graphMap));
+                    }
+                    viewDefInfo.quadPatternInfo.addSubjectToGraph(subject, graph);
+                }
+            }
 
             if (subject.isVariable()) {
                 viewDefInfo.termConstructors.put(subject, buildTermConstructor(subjectMap));
@@ -283,6 +312,17 @@ public class R2RML2SMLConverter {
                  *      either an object map, or a referencing object map.
                  *   2) using the constant shortcut property rr:object.
                  */
+
+                PredicatesObjects pos = new PredicatesObjects();
+
+                for (TermMap graphMap : predObjMap.getGraphMaps()) {
+                    String graphVarName = graphVarNamePrefix + graphVarNameCounter;
+                    graphVarNameCounter++;
+
+                    Node graph = buildNodeFromTermMap(graphMap, graphVarName);
+                    viewDefInfo.quadPatternInfo.addPredicatesObjectsToGraph(pos, graph);
+                }
+
                 List<PredicateMap> predicateMaps =
                         new ArrayList<PredicateMap>(predObjMap.getPredicateMaps());
 
@@ -296,7 +336,7 @@ public class R2RML2SMLConverter {
                     predVarNameCounter++;
 
                     Node predicate = buildNodeFromTermMap(predicateMap, predVarName);
-                    viewDefInfo.quadPatternInfo.addPredicateToSubject(subject, predicate);
+                    pos.addPredicate(predicate);
 
                     if (predicate.isVariable()) {
                         viewDefInfo.termConstructors.put(predicate, buildTermConstructor(predicateMap));
@@ -310,13 +350,15 @@ public class R2RML2SMLConverter {
                         objVarNameCounter++;
 
                         Node object = buildNodeFromTermMap(objectMap, objectVarName);
-                        viewDefInfo.quadPatternInfo.addObjectToSubjectPredicate(subject, predicate, object);
+                        pos.addObject(object);
 
                         if (object.isVariable()) {
                             viewDefInfo.termConstructors.put(object, buildTermConstructor(objectMap));
                         }
                     }
                 }
+
+                viewDefInfo.quadPatternInfo.addPredicatesObjectsToSubject(pos, subject);
             }
         }
 
