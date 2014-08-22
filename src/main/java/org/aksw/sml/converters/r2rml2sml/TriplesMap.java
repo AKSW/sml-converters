@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.aksw.sml.converters.vocabs.RR;
-import org.apache.jena.riot.Lang;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -22,8 +21,8 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class TriplesMap {
-    private Model model;
-    private Resource triplesMapResource;
+    private final Model model;
+    private final Resource triplesMapResource;
     private final Set<Property> shortcutPredicates = new HashSet<Property>(Arrays.asList(
             RR.graph, RR.subject, RR.predicate, RR.object));
     private final Map<Property, Property> short2general = new HashMap<Property, Property>() {
@@ -73,22 +72,22 @@ public class TriplesMap {
 
     /**
      * Given a statement like
-     * 
+     *
      *  [ rr:subject :someResource ;
      *    rr:class :SomeClass ;
      *    ...                           ]
-     * 
+     *
      * that types a subject of a subject map, this method introduces a new
      * predicate object map like so
-     * 
+     *
      *  [ rr:subject <:someResource> ;
      *    rr:predicateObjectMap [
      *      rr:predicateMap [ rr:constant rdf:type ] ;
      *      rr:objectMap [ rr:constant :SomeClass ] ] ;
      *    ...                                            ]
-     * 
+     *
      * TODO: term type...
-     * 
+     *
      * @param triplesMap
      * @param statement
      * @return
@@ -184,7 +183,7 @@ public class TriplesMap {
 
         for(RDFNode object : objects) {
             Resource r = (Resource)object;
-            PredicateObjectMap item = new PredicateObjectMap(model, r); 
+            PredicateObjectMap item = new PredicateObjectMap(model, r);
 
             result.add(item);
         }
@@ -216,7 +215,6 @@ public class TriplesMap {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((model == null) ? 0 : model.hashCode());
         result = prime * result + ((triplesMapResource == null) ? 0 : triplesMapResource.hashCode());
         return result;
     }
@@ -234,8 +232,7 @@ public class TriplesMap {
 
         if (model == null) {
             if (other.model != null) return false;
-
-        } else if (!model.equals(other.model)) return false;
+        }
 
         if (triplesMapResource == null) {
             if (other.triplesMapResource != null) return false;

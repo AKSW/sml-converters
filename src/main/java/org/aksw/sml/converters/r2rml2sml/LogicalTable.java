@@ -13,19 +13,19 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 public class LogicalTable {
     public static final String tblType = "table";
     public static final String queryType = "query";
-    public static enum LogTableType { TABLE, QUERY }; 
+    public static enum LogTableType { TABLE, QUERY };
 
-    private Model model;
-    private Resource lTblResource;
+    private final Model model;
+    private final Resource lTblResource;
     private LogTableType type;
-    private String lTblExpression;
+    private final String lTblExpression;
 
     /** @author sherif */
     public LogicalTable(Model model, Resource logicalTableResource) {
         super();
         this.model = model;
         this.lTblResource = logicalTableResource;
-        
+
         StmtIterator props = model.listStatements(lTblResource, null, (RDFNode) null);
         Statement sttmnt = RRUtils.getStatementFromSet(props.toSet());
         Property logTblProp = sttmnt.getPredicate();
@@ -98,7 +98,6 @@ public class LogicalTable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((model == null) ? 0 : model.hashCode());
         result = prime * result + ((lTblResource == null) ? 0 : lTblResource.hashCode());
 
         return result;
@@ -114,11 +113,10 @@ public class LogicalTable {
         if (getClass() != obj.getClass()) return false;
 
         LogicalTable other = (LogicalTable) obj;
+
         if (model == null) {
             if (other.model != null) return false;
-
-        } else if (!model.equals(other.model))
-            return false;
+        }
 
         if (lTblResource == null) {
             if (other.lTblResource != null) return false;
