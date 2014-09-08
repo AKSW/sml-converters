@@ -23,8 +23,8 @@ public class TermConstructorConverter {
     private final TermConstructorType type;
     protected Expr expr;
     private Property termMapPredicate = null;
-    private String langStr;
-    private Resource dtype;
+    private final String langStr;
+    private final Resource dtype;
 
     public TermConstructorConverter(TermConstructorType type, List<Expr> exprs) {
         this.type = type;
