@@ -492,6 +492,10 @@ public class SML2R2RMLConverter {
                 if (dtype != null) {
                     results.add(new PredicateAndObject(RR.datatype, dtype));
                 }
+
+                // add term type
+                Resource termType = tcc.getTermType();
+                results.add(new PredicateAndObject(RR.termType, termType));
             }
             /* else: The most outer function *must* be such a generic term
              * constructor function already handled above. So there is no else
