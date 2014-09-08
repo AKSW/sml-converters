@@ -98,7 +98,7 @@ public class LogicalTable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((lTblResource == null) ? 0 : lTblResource.hashCode());
+        result = prime * result + ((lTblExpression == null) ? 0 : lTblExpression.hashCode());
 
         return result;
     }
@@ -114,15 +114,10 @@ public class LogicalTable {
 
         LogicalTable other = (LogicalTable) obj;
 
-        if (model == null) {
-            if (other.model != null) return false;
+        if (this.lTblExpression.equals(other.getTableExpression())) {
+            return true;
+        } else {
+            return false;
         }
-
-        if (lTblResource == null) {
-            if (other.lTblResource != null) return false;
-
-        } else if (!lTblResource.equals(other.lTblResource)) return false;
-
-        return true;
     }
 }
