@@ -72,7 +72,7 @@ public class TermConstructorConverterTest {
                         "empl");
 
         TermConstructorConverter tcc = createTCConverter(viewDef, "empl");
-        tcc.collectProperties(tcc.exprs, props);
+        tcc.collectProperties(tcc.expr, props);
 
         assertTrue(props[0]);  // there is a variable
         assertFalse(props[1]);  // there are no multiples variables
@@ -96,7 +96,7 @@ public class TermConstructorConverterTest {
                     "From " +
                         "empl");
         TermConstructorConverter tcc = createTCConverter(viewDef, "empl");
-        tcc.collectProperties(tcc.exprs, props);
+        tcc.collectProperties(tcc.expr, props);
 
         assertTrue(props[0]);
         assertTrue(props[1]);
@@ -121,7 +121,7 @@ public class TermConstructorConverterTest {
                     "empl");
 
         TermConstructorConverter tcc = createTCConverter(viewDef, "empl");
-        tcc.collectProperties(tcc.exprs, props);
+        tcc.collectProperties(tcc.expr, props);
 
         assertFalse(props[0]);
         assertFalse(props[1]);
@@ -146,7 +146,7 @@ public class TermConstructorConverterTest {
                     "empl");
 
         TermConstructorConverter tcc = createTCConverter(viewDef, "empl");
-        tcc.collectProperties(tcc.exprs, props);
+        tcc.collectProperties(tcc.expr, props);
 
         assertTrue(props[0]);
         assertFalse(props[1]);
@@ -171,7 +171,7 @@ public class TermConstructorConverterTest {
                     "empl");
 
         TermConstructorConverter tcc = createTCConverter(viewDef, "empl");
-        tcc.collectProperties(tcc.exprs, props);
+        tcc.collectProperties(tcc.expr, props);
 
         assertTrue(props[0]);
         assertTrue(props[1]);
@@ -195,7 +195,7 @@ public class TermConstructorConverterTest {
                     "empl");
 
         TermConstructorConverter tcc = createTCConverter(viewDef, "empl");
-        tcc.collectProperties(tcc.exprs, props);
+        tcc.collectProperties(tcc.expr, props);
 
         assertTrue(props[0]);
         assertFalse(props[1]);

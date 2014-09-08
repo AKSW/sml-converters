@@ -17,12 +17,12 @@ enum TermConstructorType { bNode, uri, plainLiteral, typedLiteral };
 
 public class TermConstructorConverter {
     private TermConstructorType type;
-    protected List<Expr> exprs;
+    protected Expr expr;
     private Property termMapPredicate = null;
 
     public TermConstructorConverter(TermConstructorType type, List<Expr> exprs) {
         this.type = type;
-        this.exprs = exprs;
+        this.expr = exprs.get(0);
     }
 
     public Resource getTermType() {
@@ -57,10 +57,10 @@ public class TermConstructorConverter {
             exprsProps[1] = hasMultipleVars;
             exprsProps[2] = hasConstants;
 
-            collectProperties(exprs, exprsProps);
+            collectProperties(expr, exprsProps);
 
             // rr:column
-            if (exprsProps[0] && !exprsProps[1] && !exprsProps[2]) {  // only single var 
+            if (exprsProps[0] && !exprsProps[1] && !exprsProps[2]) {  // only single var
                 termMapPredicate = RR.column;
 
             // rr:constant
@@ -76,22 +76,22 @@ public class TermConstructorConverter {
         }
     }
 
-    protected void collectProperties(List<Expr> exprs, Boolean[] props) {
-        for (Expr expr : exprs) {
-            if (expr.isConstant() && (!expr.getConstant().isString() ||
-                    !expr.getConstant().getString().isEmpty())) {
-                props[2] = true;  // set the constants flag
+    protected void collectProperties(Expr expr, Boolean[] props) {
+        if (expr.isConstant() && (!expr.getConstant().isString() ||
+                !expr.getConstant().getString().isEmpty())) {
+            props[2] = true;  // set the constants flag
 
-            } else if (expr.isFunction()) {
-                List<Expr> funcExprs = expr.getFunction().getArgs();
-                collectProperties(funcExprs, props);
+        } else if (expr.isFunction()) {
+            List<Expr> funcExprs = expr.getFunction().getArgs();
+            for (Expr arg : funcExprs) {
+                collectProperties(arg, props);
+            }
 
-            } else if (expr.isVariable()) {
-                if (props[0]) {  // if there were already variables fond so far...
-                    props[1] = true;  // ...set the multiple variables flag
-                } else {
-                    props[0] = true;  // ...else just set the variable flag
-                }
+        } else if (expr.isVariable()) {
+            if (props[0]) {  // if there were already variables fond so far...
+                props[1] = true;  // ...set the multiple variables flag
+            } else {
+                props[0] = true;  // ...else just set the variable flag
             }
         }
     }
@@ -100,19 +100,19 @@ public class TermConstructorConverter {
      * TODO: handle language tags and datatypes
      */
     public Literal getMapObject() {
-        StringBuilder exprStr = new StringBuilder();
-        
+        StringBuilder exprStrBuilder = new StringBuilder();
+
         if (getMapPredicate().equals(RR.column)) {
             // there is only one variable in this.exprs
-            Var colVar = exprs.get(0).asVar();
-            exprStr.append(colVar.getName());
+            Var colVar = expr.asVar();
+            exprStrBuilder.append(colVar.getName());
         } else {
-            for (Expr expr : exprs) {
-                buildMapObjStr(exprStr, expr);
+            for (Expr arg : expr.getFunction().getArgs()) {
+                buildMapObjStr(exprStrBuilder, arg);
             }
         }
 
-        return ResourceFactory.createPlainLiteral(exprStr.toString());
+        return ResourceFactory.createPlainLiteral(exprStrBuilder.toString());
     }
 
     private void buildMapObjStr(StringBuilder exprStr, Expr expr) {
