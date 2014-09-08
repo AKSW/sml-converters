@@ -53,15 +53,24 @@ public class R2RML2SMLConverter {
     private static final String predicateVarNamePrefix = "p";
     private static final String objectvarNamePrefix = "o";
 
-    protected static Multimap<LogicalTable, TriplesMap> buildTblToTM(R2RMLSpec r2rmlSpec) {
-        Multimap<LogicalTable, TriplesMap> tbl2TM = HashMultimap.create();
+    protected static Map<LogicalTable, Collection<TriplesMap>> buildTblToTM(R2RMLSpec r2rmlSpec) {
+        Map<LogicalTable, Collection<TriplesMap>> tbl2TMs =
+                new HashMap<LogicalTable, Collection<TriplesMap>>();
 
         // Group triples maps by their logical table
         for (TriplesMap triplesMap : r2rmlSpec.getTriplesMaps()) {
-            tbl2TM.put(triplesMap.getLogicalTable(), triplesMap);
+            LogicalTable logTbl = triplesMap.getLogicalTable();
+
+            if (tbl2TMs.containsKey(logTbl)) {
+                tbl2TMs.get(logTbl).add(triplesMap);
+            } else {
+                Collection<TriplesMap> triplesMaps = new ArrayList<TriplesMap>();
+                triplesMaps.add(triplesMap);
+                tbl2TMs.put(logTbl, triplesMaps);
+            }
         }
 
-        return tbl2TM;
+        return tbl2TMs;
     }
 
     /**
@@ -371,7 +380,7 @@ public class R2RML2SMLConverter {
 
     public static List<ViewDefinition> convert(Model r2rmlMappings) {
         R2RMLSpec r2rmlSpec = new R2RMLSpec(r2rmlMappings);
-        Multimap<LogicalTable, TriplesMap> tbl2TM = buildTblToTM(r2rmlSpec);
+        Map<LogicalTable, Collection<TriplesMap>> tbl2TM = buildTblToTM(r2rmlSpec);
 
         List<ViewDefinition> viewDefs = new ArrayList<ViewDefinition>();
 

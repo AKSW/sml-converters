@@ -8,13 +8,13 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.aksw.commons.collections.Pair;
 import org.aksw.sml.converters.vocabs.RR;
 import org.junit.Test;
 
-import com.google.common.collect.Multimap;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
@@ -107,19 +107,19 @@ public class R2RML2SMLConverterTest {
         Resource expectedTMSubject = ResourceFactory.createResource(prefix + "TriplesMap1");
         NodeIterator tmpRes = r2rml.listObjectsOfProperty(expectedTMSubject, RR.logicalTable);
         Resource expectedTblSubject = tmpRes.next().asResource();
+        LogicalTable logTbl = new LogicalTable(r2rml, expectedTblSubject);
         Pair<LogicalTable, TriplesMap> expectedLtTm =
                 new Pair<LogicalTable, TriplesMap>(
-                        new LogicalTable(r2rml, expectedTblSubject),
-                        new TriplesMap(r2rml, expectedTMSubject));
+                        logTbl, new TriplesMap(r2rml, expectedTMSubject));
         int expectedNumLtTmEntries = 1;
 
-        Multimap<LogicalTable, TriplesMap> tableToTmMultiMap = R2RML2SMLConverter.buildTblToTM(spec);
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.size());
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.keys().size());
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.keySet().size());
-        Set<LogicalTable> tbls = tableToTmMultiMap.keySet();
+        Map<LogicalTable, Collection<TriplesMap>> tableToTMs =
+                R2RML2SMLConverter.buildTblToTM(spec);
+        assertEquals(expectedNumLtTmEntries, tableToTMs.size());
+        assertEquals(expectedNumLtTmEntries, tableToTMs.keySet().size());
+        Set<LogicalTable> tbls = tableToTMs.keySet();
         assertTrue(tbls.contains(expectedLtTm.first));
-        Collection<TriplesMap> triplesMaps = tableToTmMultiMap.values();
+        Collection<TriplesMap> triplesMaps = tableToTMs.get(logTbl);
         assertTrue(triplesMaps.contains(expectedLtTm.second));
     }
 
@@ -136,31 +136,37 @@ public class R2RML2SMLConverterTest {
         NodeIterator tmpRes1 = r2rml.listObjectsOfProperty(expectedTMSubject1, RR.logicalTable);
         Resource expectedTblSubject1 = tmpRes1.next().asResource();
         tmpRes1.close();
+        LogicalTable logTbl1 = new LogicalTable(r2rml, expectedTblSubject1);
         Pair<LogicalTable, TriplesMap> expectedLtTm1 =
                 new Pair<LogicalTable, TriplesMap>(
-                        new LogicalTable(r2rml, expectedTblSubject1),
-                        new TriplesMap(r2rml, expectedTMSubject1));
+                        logTbl1, new TriplesMap(r2rml, expectedTMSubject1));
         expctdLtTmEntries.add(expectedLtTm1);
         // entry 2
         Resource expectedTMSubject2 = ResourceFactory.createResource(prefix + "TriplesMap3");
         NodeIterator tmpRes2 = r2rml.listObjectsOfProperty(expectedTMSubject2, RR.logicalTable);
         Resource expectedTblSubject2 = tmpRes2.next().asResource();
         tmpRes2.close();
+        LogicalTable logTbl2 = new LogicalTable(r2rml, expectedTblSubject2);
         Pair<LogicalTable, TriplesMap> expectedLtTm2 =
                 new Pair<LogicalTable, TriplesMap>(
-                        new LogicalTable(r2rml, expectedTblSubject2),
-                        new TriplesMap(r2rml, expectedTMSubject2));
+                        logTbl2, new TriplesMap(r2rml, expectedTMSubject2));
         expctdLtTmEntries.add(expectedLtTm2);
 
         int expectedNumLtTmEntries = 2;
 
-        Multimap<LogicalTable, TriplesMap> tableToTmMultiMap = R2RML2SMLConverter.buildTblToTM(spec);
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.size());
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.keys().size());
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.keySet().size());
-        Set<LogicalTable> tbls = tableToTmMultiMap.keySet();
-        Collection<TriplesMap> triplesMaps = tableToTmMultiMap.values();
+        Map<LogicalTable, Collection<TriplesMap>> tableToTMs =
+                R2RML2SMLConverter.buildTblToTM(spec);
+        assertEquals(expectedNumLtTmEntries, tableToTMs.size());
+        assertEquals(expectedNumLtTmEntries, tableToTMs.keySet().size());
+        Set<LogicalTable> tbls = tableToTMs.keySet();
+        System.out.println(tableToTMs.values());
+        System.out.println(expctdLtTmEntries);
+        Collection<TriplesMap> triplesMaps = new ArrayList<TriplesMap>();
+        for (Collection<TriplesMap> tMs : tableToTMs.values()) {
+            triplesMaps.addAll(tMs);
+        }
         for (Pair<LogicalTable, TriplesMap> expctdVal : expctdLtTmEntries) {
+
             assertTrue(tbls.contains(expctdVal.first));
             assertTrue(triplesMaps.contains(expctdVal.second));
         }
@@ -207,12 +213,16 @@ public class R2RML2SMLConverterTest {
 
         int expectedNumLtTmEntries = 3;
 
-        Multimap<LogicalTable, TriplesMap> tableToTmMultiMap = R2RML2SMLConverter.buildTblToTM(spec);
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.size());
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.keys().size());
-        assertEquals(expectedNumLtTmEntries, tableToTmMultiMap.keySet().size());
-        Set<LogicalTable> tbls = tableToTmMultiMap.keySet();
-        Collection<TriplesMap> triplesMaps = tableToTmMultiMap.values();
+        Map<LogicalTable, Collection<TriplesMap>> tableToTMs =
+                R2RML2SMLConverter.buildTblToTM(spec);
+
+        assertEquals(expectedNumLtTmEntries, tableToTMs.size());
+        assertEquals(expectedNumLtTmEntries, tableToTMs.keySet().size());
+        Set<LogicalTable> tbls = tableToTMs.keySet();
+        Collection<TriplesMap> triplesMaps = new ArrayList<TriplesMap>();
+        for (Collection<TriplesMap> tMs : tableToTMs.values()) {
+            triplesMaps.addAll(tMs);
+        }
         for (Pair<LogicalTable, TriplesMap> expctdVal : expctdLtTmEntries) {
             assertTrue(tbls.contains(expctdVal.first));
             assertTrue(triplesMaps.contains(expctdVal.second));
