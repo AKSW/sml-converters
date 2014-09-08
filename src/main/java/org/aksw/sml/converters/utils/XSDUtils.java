@@ -1,4 +1,4 @@
-package org.aksw.sml.converters.r2rml2sml;
+package org.aksw.sml.converters.utils;
 
 import java.util.HashMap;
 import java.util.Map;
