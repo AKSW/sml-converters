@@ -182,7 +182,11 @@ public class SML2R2RMLConverter {
                 r2rml.add(graphStatements);
                 // connect it to the subject
                 Resource graphMapSubject = graphStatements.get(0).getSubject();
-                Statement graphMapStatement = ResourceFactory.createStatement(triplesMapObject_subjectMap.asResource(), RR.graphMap, graphMapSubject);
+
+                Statement graphMapStatement = ResourceFactory.createStatement(
+                        triplesMapObject_subjectMap.asResource(), RR.graphMap,
+                        graphMapSubject);
+
                 r2rml.add(graphMapStatement);
             }
             r2rml.add(subjectMapTriple);
@@ -451,7 +455,7 @@ public class SML2R2RMLConverter {
 
         List<Expr> args = func.getArgs();
         int numArgs = args.size();
-        List<Expr> tcArgs = args.subList(1, numArgs-1);
+        List<Expr> tcArgs = args.subList(1, numArgs);
         tc = new TermConstructorConverter(tcType, tcArgs);
 
         return tc;
