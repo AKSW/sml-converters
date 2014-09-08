@@ -481,6 +481,17 @@ public class SML2R2RMLConverter {
                 Property mapPredicate = tcc.getMapPredicate();
                 Literal mapObject = tcc.getMapObject();
                 results.add(new PredicateAndObject(mapPredicate, mapObject));
+
+                // add rr:language if set
+                Literal lang = tcc.getLang();
+                if (lang != null ) {
+                    results.add(new PredicateAndObject(RR.language, lang));
+                }
+                // add rr:datatype if set
+                Resource dtype = tcc.getDatatype();
+                if (dtype != null) {
+                    results.add(new PredicateAndObject(RR.datatype, dtype));
+                }
             }
             /* else: The most outer function *must* be such a generic term
              * constructor function already handled above. So there is no else
