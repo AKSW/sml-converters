@@ -74,14 +74,14 @@
                             <timestamped>true</timestamped>
                             <dataSet>
 
-                                <data>
-                                    <type>directory</type>
-                                    <src>${basedir}/src/deb/resources/etc</src>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/etc</prefix>
-                                    </mapper>
-                                </data>
+<!--                                 <data> -->
+<!--                                     <type>directory</type> -->
+<!--                                     <src>${basedir}/src/deb/resources/etc</src> -->
+<!--                                     <mapper> -->
+<!--                                         <type>perm</type> -->
+<!--                                         <prefix>/etc</prefix> -->
+<!--                                     </mapper> -->
+<!--                                 </data> -->
 
                                 <data>
                                     <type>directory</type>
