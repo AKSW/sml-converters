@@ -7,3 +7,5 @@ release.properties
 .project
 .settings
 *.swp
+
+dependency-reduced-pom.xml
