@@ -1,0 +1,105 @@
+@prefix gkw: <#> .
+@prefix gkwo: <http://www.xybermotive.com/GeoKnowWeatherOnt#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gkw:ncdc_ghcn_daily_tmin
+    rr:logicalTable [ rr:sqlQuery "SELECT id, date, (CAST(value AS DECIMAL)/10) AS tmin FROM ncdc_ghcn_daily WHERE element = 'TMIN' ;" ] ;
+    rr:subjectMap [
+        rr:class gkwo:WeatherObservation ;
+        rr:template '{"id"}-{"date"}' ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate gkwo:tmin ;
+        rr:objectMap [
+            rr:column '"tmin"' ;
+            rr:datatype xsd:float ;
+        ] ;
+    ]
+    .
+
+gkw:ncdc_ghcn_daily_tmax
+    rr:logicalTable [ rr:sqlQuery "SELECT id, date, (CAST(value AS DECIMAL)/10) AS tmax FROM ncdc_ghcn_daily WHERE element = 'TMAX' ;" ] ;
+    rr:subjectMap [
+        rr:class gkwo:WeatherObservation ;
+        rr:template '{"id"}-{"date"}' ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate gkwo:tmax ;
+        rr:objectMap [
+            rr:column '"tmax"' ;
+            rr:datatype xsd:float ;
+        ] ;
+    ]
+    .
+
+gkw:ncdc_ghcn_daily_prcp
+    rr:logicalTable [ rr:sqlQuery "SELECT id, date, (CAST(value AS DECIMAL)/10) AS prcp FROM ncdc_ghcn_daily WHERE element = 'PRCP' ;" ] ;
+    rr:subjectMap [
+        rr:class gkwo:WeatherObservation ;
+        rr:template '{"id"}-{"date"}' ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate gkwo:prcp ;
+        rr:objectMap [
+            rr:column '"prcp"' ;
+            rr:datatype xsd:float ;
+        ] ;
+    ]
+    .
+
+gkw:ncdc_ghcn_daily_snwd
+    rr:logicalTable [ rr:sqlQuery "SELECT id, date, value AS snwd FROM ncdc_ghcn_daily WHERE element = 'SNWD' ;" ] ;
+    rr:subjectMap [
+        rr:class gkwo:WeatherObservation ;
+        rr:template '{"id"}-{"date"}' ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate gkwo:snwd ;
+        rr:objectMap [
+            rr:column '"snwd"' ;
+            rr:datatype xsd:int ;
+        ] ;
+    ]
+    .
+
+gkw:ncdc_stations
+    rr:logicalTable [ rr:tableName '"ncdc_stations"' ; ] ;
+    rr:subjectMap [
+        rr:class gkwo:WeatherStation ;
+        rr:template '{"id"}' ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate rdfs:label ;
+        rr:objectMap [ rr:column '"name"' ; ] ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate geo:alt ;
+        rr:objectMap [ rr:column '"elevation"' ; ] ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate geo:lat ;
+        rr:objectMap [ rr:column '"latitude"' ; ] ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate geo:long;
+        rr:objectMap [ rr:column '"longitude"' ; ] ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate gkwo:stationId;
+        rr:objectMap [ rr:column '"id"' ; ] ;
+    ] ;
+    rr:predicateObjectMap [
+        rr:predicate gkwo:hasObservation ;
+        rr:objectMap [
+            rr:parentTriplesMap gkw:ncdc_ghcn_daily_tmin ;
+            rr:joinCondition [
+                rr:child "id" ;
+                rr:parent "id" ;
+            ];
+        ];
+    ]
+    .

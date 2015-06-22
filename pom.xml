@@ -9,6 +9,7 @@
 
     <modules>
         <module>sml-converters-core</module>
+        <module>sml-converters-cli</module>
         <module>sml-converters-debian-cli</module>
     </modules>
 
@@ -101,6 +102,12 @@
                 <groupId>org.aksw.sml</groupId>
                 <artifactId>sml-converters-core</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sf.jopt-simple</groupId>
+                <artifactId>jopt-simple</artifactId>
+                <version>4.9-beta-1</version>
             </dependency>
 
             <dependency>
