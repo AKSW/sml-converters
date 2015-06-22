@@ -62,7 +62,7 @@
             <plugin>
                 <artifactId>jdeb</artifactId>
                 <groupId>org.vafer</groupId>
-                <version>1.0</version>
+                <version>1.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -130,7 +130,7 @@
     <dependencies>
         <dependency>
             <groupId>org.aksw.sml</groupId>
-            <artifactId>sml-converters-core</artifactId>
+            <artifactId>sml-converters-cli</artifactId>
         </dependency>
     </dependencies>
 </project>

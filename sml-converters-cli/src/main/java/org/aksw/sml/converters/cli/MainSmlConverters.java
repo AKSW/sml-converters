@@ -1,4 +1,4 @@
-package org.aksw.sml.converters.main;
+package org.aksw.sml.converters.cli;
 
 import java.io.File;
 import java.io.FileInputStream;

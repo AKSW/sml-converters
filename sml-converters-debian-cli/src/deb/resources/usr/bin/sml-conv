@@ -1,4 +1,4 @@
 #!/bin/sh
 
-java -cp "/usr/share/lib/sml-converters-cli/sml-converters-cli.jar" org.aksw.sml.converters.sml2r2rml.Run "$@"
+java -cp "/usr/share/lib/sml-converters-cli/sml-converters-cli.jar" "org.aksw.sml.converters.cli.MainSmlConverters" "$@"
 

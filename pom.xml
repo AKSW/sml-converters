@@ -105,6 +105,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.aksw.sml</groupId>
+                <artifactId>sml-converters-cli</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>net.sf.jopt-simple</groupId>
                 <artifactId>jopt-simple</artifactId>
                 <version>4.9-beta-1</version>
