@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.expr.E_StrLang;
 import com.hp.hpl.jena.sparql.expr.E_URI;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprFunction;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 /**
@@ -105,7 +106,7 @@ public class R2RML2SMLConverter {
             inner = RRUtils.parseTemplate(templateString);
 
         } else if (termMap.isColumnTermMap()) {
-            inner = NodeValue.makeString("?" + termMap.getColumnTerm());
+            inner = new ExprVar(termMap.getColumnTerm().getString());
         }
 
         // URI term constructor
