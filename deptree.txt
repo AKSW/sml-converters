@@ -1,0 +1,378 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] sml-converters-parent
+[INFO] sml-converters-core
+[INFO] sml-converters-cli
+[INFO] sml-converters-debian-cli
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building sml-converters-parent 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.1:tree (default-cli) @ sml-converters-parent ---
+[INFO] org.aksw.sml:sml-converters-parent:pom:0.0.1-SNAPSHOT
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building sml-converters-core 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.1:tree (default-cli) @ sml-converters-core ---
+[INFO] org.aksw.sml:sml-converters-core:jar:0.0.1-SNAPSHOT
+[INFO] +- org.aksw.sparqlify:sparqlify-core:jar:0.6.16-SNAPSHOT:compile
+[INFO] |  +- org.aksw.jena-sparql-api:jena-sparql-api-core:jar:2.12.1-8:compile
+[INFO] |  |  +- org.aksw.jena-sparql-api:jena-sparql-api-utils:jar:2.12.1-8:compile
+[INFO] |  |  |  +- org.apache.jena:jena-sdb:jar:1.5.1:compile
+[INFO] |  |  |  \- com.google.code.gson:gson:jar:2.2.4:compile
+[INFO] |  |  +- org.apache.jena:jena-core:jar:2.12.1:compile
+[INFO] |  |  |  +- xerces:xercesImpl:jar:2.11.0:compile
+[INFO] |  |  |  |  \- xml-apis:xml-apis:jar:1.4.01:compile
+[INFO] |  |  |  \- org.slf4j:slf4j-log4j12:jar:1.6.0:compile
+[INFO] |  |  +- org.apache.jena:jena-arq:jar:2.12.1:compile
+[INFO] |  |  |  +- org.apache.httpcomponents:httpclient:jar:4.2.6:compile
+[INFO] |  |  |  |  +- org.apache.httpcomponents:httpcore:jar:4.2.5:compile
+[INFO] |  |  |  |  \- commons-codec:commons-codec:jar:1.6:compile
+[INFO] |  |  |  +- com.github.jsonld-java:jsonld-java:jar:0.5.0:compile
+[INFO] |  |  |  |  +- com.fasterxml.jackson.core:jackson-core:jar:2.3.3:compile
+[INFO] |  |  |  |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.3.3:compile
+[INFO] |  |  |  |     \- com.fasterxml.jackson.core:jackson-annotations:jar:2.3.0:compile
+[INFO] |  |  |  +- org.apache.httpcomponents:httpclient-cache:jar:4.2.6:compile
+[INFO] |  |  |  +- org.apache.thrift:libthrift:jar:0.9.1:compile
+[INFO] |  |  |  |  \- org.apache.commons:commons-lang3:jar:3.1:compile
+[INFO] |  |  |  +- org.slf4j:jcl-over-slf4j:jar:1.7.6:compile
+[INFO] |  |  |  \- org.apache.commons:commons-csv:jar:1.0:compile
+[INFO] |  |  +- org.apache.jena:jena-iri:jar:1.1.1:compile
+[INFO] |  |  +- org.apache.commons:commons-compress:jar:1.2:compile
+[INFO] |  |  \- com.blogspot.nurkiewicz.asyncretry:asyncretry:jar:0.0.1:compile
+[INFO] |  +- org.aksw.sparqlify:sparqlify-type-system:jar:0.6.16-SNAPSHOT:compile
+[INFO] |  +- org.aksw.sparqlify:sparqlify-tests:jar:0.6.16-SNAPSHOT:runtime
+[INFO] |  |  \- org.aksw.jena-sparql-api:jena-sparql-api-web:jar:2.12.1-8:runtime
+[INFO] |  |     +- org.aksw.jena-sparql-api:jena-sparql-api-concepts:jar:2.12.1-8:runtime
+[INFO] |  |     +- org.glassfish.jersey.ext:jersey-spring3:jar:2.15:runtime
+[INFO] |  |     |  +- org.glassfish.jersey.core:jersey-server:jar:2.15:runtime
+[INFO] |  |     |  |  +- org.glassfish.jersey.core:jersey-common:jar:2.15:runtime
+[INFO] |  |     |  |  |  +- org.glassfish.jersey.bundles.repackaged:jersey-guava:jar:2.15:runtime
+[INFO] |  |     |  |  |  \- org.glassfish.hk2:osgi-resource-locator:jar:1.0.1:runtime
+[INFO] |  |     |  |  +- org.glassfish.jersey.core:jersey-client:jar:2.15:runtime
+[INFO] |  |     |  |  +- javax.annotation:javax.annotation-api:jar:1.2:runtime
+[INFO] |  |     |  |  +- org.glassfish.hk2:hk2-api:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  +- org.glassfish.hk2.external:javax.inject:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  \- org.glassfish.hk2:hk2-locator:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |     \- org.javassist:javassist:jar:3.18.1-GA:runtime
+[INFO] |  |     |  +- org.glassfish.jersey.containers:jersey-container-servlet-core:jar:2.15:runtime
+[INFO] |  |     |  +- org.glassfish.hk2:hk2:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  +- org.glassfish.hk2:hk2-utils:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  +- org.glassfish.hk2:config-types:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  +- org.glassfish.hk2:core:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  +- org.glassfish.hk2:hk2-config:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  |  \- org.glassfish.hk2.external:bean-validator:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  +- org.glassfish.hk2:hk2-runlevel:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |  \- org.glassfish.hk2:class-model:jar:2.4.0-b06:runtime
+[INFO] |  |     |  |     \- org.glassfish.hk2.external:asm-all-repackaged:jar:2.4.0-b06:runtime
+[INFO] |  |     |  +- org.glassfish.hk2:spring-bridge:jar:2.4.0-b06:runtime
+[INFO] |  |     |  \- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:runtime
+[INFO] |  |     +- org.springframework:spring-web:jar:4.1.4.RELEASE:runtime
+[INFO] |  |     \- org.eclipse.jetty:jetty-servlet:jar:8.1.16.v20140903:runtime
+[INFO] |  |        \- org.eclipse.jetty:jetty-security:jar:8.1.16.v20140903:runtime
+[INFO] |  |           \- org.eclipse.jetty:jetty-server:jar:8.1.16.v20140903:runtime
+[INFO] |  |              +- org.eclipse.jetty.orbit:javax.servlet:jar:3.0.0.v201112011016:runtime
+[INFO] |  |              +- org.eclipse.jetty:jetty-continuation:jar:8.1.16.v20140903:runtime
+[INFO] |  |              \- org.eclipse.jetty:jetty-http:jar:8.1.16.v20140903:runtime
+[INFO] |  |                 \- org.eclipse.jetty:jetty-io:jar:8.1.16.v20140903:runtime
+[INFO] |  |                    \- org.eclipse.jetty:jetty-util:jar:8.1.16.v20140903:runtime
+[INFO] |  +- org.aksw.commons:aksw-commons-util:jar:0.7.5:compile
+[INFO] |  |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |  |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] |  +- org.aksw.commons:aksw-commons-collections:jar:0.7.5:compile
+[INFO] |  +- com.jolbox:bonecp:jar:0.7.1.RELEASE:compile
+[INFO] |  +- log4j:log4j:jar:1.2.14:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.4:compile
+[INFO] |  +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] |  +- commons-validator:commons-validator:jar:1.4.0:compile
+[INFO] |  |  \- commons-digester:commons-digester:jar:1.8:compile
+[INFO] |  +- commons-beanutils:commons-beanutils-core:jar:1.8.3:compile
+[INFO] |  +- net.sourceforge.collections:collections-generic:jar:4.01:compile
+[INFO] |  +- postgresql:postgresql:jar:8.4-701.jdbc4:compile
+[INFO] |  +- org.postgis:postgis-jdbc:jar:1.3.3:compile
+[INFO] |  |  \- org.postgis:postgis-stubs:jar:1.3.3:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:1.6.0:compile
+[INFO] |  +- org.slf4j:slf4j-ext:jar:1.6.0:compile
+[INFO] |  |  \- ch.qos.cal10n:cal10n-api:jar:0.7.2:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.2.1:compile
+[INFO] |  +- com.google.guava:guava:jar:11.0:compile
+[INFO] |  |  \- com.google.code.findbugs:jsr305:jar:1.3.9:compile
+[INFO] |  +- code.google.com:patricia-trie:jar:0.6:compile
+[INFO] |  +- org.antlr:antlr-runtime:jar:3.4:compile
+[INFO] |  |  +- org.antlr:stringtemplate:jar:3.2.1:compile
+[INFO] |  |  \- antlr:antlr:jar:2.7.7:compile
+[INFO] |  +- org.antlr:ST4:jar:4.0.7:compile
+[INFO] |  +- jrexx:jrexx:jar:1.1.1:compile
+[INFO] |  +- net.sf.opencsv:opencsv:jar:2.3:compile
+[INFO] |  +- net.sourceforge.jexcelapi:jxl:jar:2.6.12:compile
+[INFO] |  +- com.h2database:h2:jar:1.3.170:compile
+[INFO] |  +- org.jgrapht:jgrapht-core:jar:0.9.0:compile
+[INFO] |  +- org.springframework:spring-jdbc:jar:4.1.4.RELEASE:compile
+[INFO] |  |  +- org.springframework:spring-beans:jar:4.1.4.RELEASE:compile
+[INFO] |  |  +- org.springframework:spring-core:jar:4.1.4.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-tx:jar:4.1.4.RELEASE:compile
+[INFO] |  +- org.springframework.batch:spring-batch-core:jar:3.0.3.RELEASE:compile
+[INFO] |  |  +- com.ibm.jbatch:com.ibm.jbatch-tck-spi:jar:1.0:compile
+[INFO] |  |  |  \- javax.batch:javax.batch-api:jar:1.0:compile
+[INFO] |  |  +- org.codehaus.jettison:jettison:jar:1.2:compile
+[INFO] |  |  +- org.springframework:spring-aop:jar:4.0.5.RELEASE:compile
+[INFO] |  |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  |  \- org.springframework:spring-context:jar:4.0.5.RELEASE:compile
+[INFO] |  |     \- org.springframework:spring-expression:jar:4.0.5.RELEASE:compile
+[INFO] |  +- org.springframework.batch:spring-batch-infrastructure:jar:3.0.3.RELEASE:compile
+[INFO] |  |  \- org.springframework.retry:spring-retry:jar:1.1.0.RELEASE:compile
+[INFO] |  \- net.sf.jsqlparser:jsqlparser:jar:0.8.0:compile
+[INFO] \- junit:junit:jar:4.11:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building sml-converters-cli 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.1:tree (default-cli) @ sml-converters-cli ---
+[INFO] org.aksw.sml:sml-converters-cli:jar:0.0.1-SNAPSHOT
+[INFO] +- org.aksw.sml:sml-converters-core:jar:0.0.1-SNAPSHOT:compile
+[INFO] |  \- org.aksw.sparqlify:sparqlify-core:jar:0.6.16-SNAPSHOT:compile
+[INFO] |     +- org.aksw.jena-sparql-api:jena-sparql-api-core:jar:2.12.1-8:compile
+[INFO] |     |  +- org.aksw.jena-sparql-api:jena-sparql-api-utils:jar:2.12.1-8:compile
+[INFO] |     |  |  +- org.apache.jena:jena-sdb:jar:1.5.1:compile
+[INFO] |     |  |  \- com.google.code.gson:gson:jar:2.2.4:compile
+[INFO] |     |  +- org.apache.jena:jena-core:jar:2.12.1:compile
+[INFO] |     |  |  +- xerces:xercesImpl:jar:2.11.0:compile
+[INFO] |     |  |  |  \- xml-apis:xml-apis:jar:1.4.01:compile
+[INFO] |     |  |  \- org.slf4j:slf4j-log4j12:jar:1.6.0:compile
+[INFO] |     |  +- org.apache.jena:jena-arq:jar:2.12.1:compile
+[INFO] |     |  |  +- org.apache.httpcomponents:httpclient:jar:4.2.6:compile
+[INFO] |     |  |  |  +- org.apache.httpcomponents:httpcore:jar:4.2.5:compile
+[INFO] |     |  |  |  \- commons-codec:commons-codec:jar:1.6:compile
+[INFO] |     |  |  +- com.github.jsonld-java:jsonld-java:jar:0.5.0:compile
+[INFO] |     |  |  |  +- com.fasterxml.jackson.core:jackson-core:jar:2.3.3:compile
+[INFO] |     |  |  |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.3.3:compile
+[INFO] |     |  |  |     \- com.fasterxml.jackson.core:jackson-annotations:jar:2.3.0:compile
+[INFO] |     |  |  +- org.apache.httpcomponents:httpclient-cache:jar:4.2.6:compile
+[INFO] |     |  |  +- org.apache.thrift:libthrift:jar:0.9.1:compile
+[INFO] |     |  |  |  \- org.apache.commons:commons-lang3:jar:3.1:compile
+[INFO] |     |  |  +- org.slf4j:jcl-over-slf4j:jar:1.7.6:compile
+[INFO] |     |  |  \- org.apache.commons:commons-csv:jar:1.0:compile
+[INFO] |     |  +- org.apache.jena:jena-iri:jar:1.1.1:compile
+[INFO] |     |  +- org.apache.commons:commons-compress:jar:1.2:compile
+[INFO] |     |  \- com.blogspot.nurkiewicz.asyncretry:asyncretry:jar:0.0.1:compile
+[INFO] |     +- org.aksw.sparqlify:sparqlify-type-system:jar:0.6.16-SNAPSHOT:compile
+[INFO] |     +- org.aksw.sparqlify:sparqlify-tests:jar:0.6.16-SNAPSHOT:runtime
+[INFO] |     |  \- org.aksw.jena-sparql-api:jena-sparql-api-web:jar:2.12.1-8:runtime
+[INFO] |     |     +- org.aksw.jena-sparql-api:jena-sparql-api-concepts:jar:2.12.1-8:runtime
+[INFO] |     |     +- org.glassfish.jersey.ext:jersey-spring3:jar:2.15:runtime
+[INFO] |     |     |  +- org.glassfish.jersey.core:jersey-server:jar:2.15:runtime
+[INFO] |     |     |  |  +- org.glassfish.jersey.core:jersey-common:jar:2.15:runtime
+[INFO] |     |     |  |  |  +- org.glassfish.jersey.bundles.repackaged:jersey-guava:jar:2.15:runtime
+[INFO] |     |     |  |  |  \- org.glassfish.hk2:osgi-resource-locator:jar:1.0.1:runtime
+[INFO] |     |     |  |  +- org.glassfish.jersey.core:jersey-client:jar:2.15:runtime
+[INFO] |     |     |  |  +- javax.annotation:javax.annotation-api:jar:1.2:runtime
+[INFO] |     |     |  |  +- org.glassfish.hk2:hk2-api:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  +- org.glassfish.hk2.external:javax.inject:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  \- org.glassfish.hk2:hk2-locator:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |     \- org.javassist:javassist:jar:3.18.1-GA:runtime
+[INFO] |     |     |  +- org.glassfish.jersey.containers:jersey-container-servlet-core:jar:2.15:runtime
+[INFO] |     |     |  +- org.glassfish.hk2:hk2:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  +- org.glassfish.hk2:hk2-utils:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  +- org.glassfish.hk2:config-types:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  +- org.glassfish.hk2:core:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  +- org.glassfish.hk2:hk2-config:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  |  \- org.glassfish.hk2.external:bean-validator:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  +- org.glassfish.hk2:hk2-runlevel:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |  \- org.glassfish.hk2:class-model:jar:2.4.0-b06:runtime
+[INFO] |     |     |  |     \- org.glassfish.hk2.external:asm-all-repackaged:jar:2.4.0-b06:runtime
+[INFO] |     |     |  +- org.glassfish.hk2:spring-bridge:jar:2.4.0-b06:runtime
+[INFO] |     |     |  \- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:runtime
+[INFO] |     |     +- org.springframework:spring-web:jar:4.1.4.RELEASE:runtime
+[INFO] |     |     \- org.eclipse.jetty:jetty-servlet:jar:8.1.16.v20140903:runtime
+[INFO] |     |        \- org.eclipse.jetty:jetty-security:jar:8.1.16.v20140903:runtime
+[INFO] |     |           \- org.eclipse.jetty:jetty-server:jar:8.1.16.v20140903:runtime
+[INFO] |     |              +- org.eclipse.jetty.orbit:javax.servlet:jar:3.0.0.v201112011016:runtime
+[INFO] |     |              +- org.eclipse.jetty:jetty-continuation:jar:8.1.16.v20140903:runtime
+[INFO] |     |              \- org.eclipse.jetty:jetty-http:jar:8.1.16.v20140903:runtime
+[INFO] |     |                 \- org.eclipse.jetty:jetty-io:jar:8.1.16.v20140903:runtime
+[INFO] |     |                    \- org.eclipse.jetty:jetty-util:jar:8.1.16.v20140903:runtime
+[INFO] |     +- org.aksw.commons:aksw-commons-util:jar:0.7.5:compile
+[INFO] |     |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] |     +- org.aksw.commons:aksw-commons-collections:jar:0.7.5:compile
+[INFO] |     +- com.jolbox:bonecp:jar:0.7.1.RELEASE:compile
+[INFO] |     +- log4j:log4j:jar:1.2.14:compile
+[INFO] |     +- commons-lang:commons-lang:jar:2.4:compile
+[INFO] |     +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] |     +- commons-validator:commons-validator:jar:1.4.0:compile
+[INFO] |     |  \- commons-digester:commons-digester:jar:1.8:compile
+[INFO] |     +- commons-beanutils:commons-beanutils-core:jar:1.8.3:compile
+[INFO] |     +- net.sourceforge.collections:collections-generic:jar:4.01:compile
+[INFO] |     +- postgresql:postgresql:jar:8.4-701.jdbc4:compile
+[INFO] |     +- org.postgis:postgis-jdbc:jar:1.3.3:compile
+[INFO] |     |  \- org.postgis:postgis-stubs:jar:1.3.3:compile
+[INFO] |     +- org.slf4j:slf4j-api:jar:1.6.0:compile
+[INFO] |     +- org.slf4j:slf4j-ext:jar:1.6.0:compile
+[INFO] |     |  \- ch.qos.cal10n:cal10n-api:jar:0.7.2:compile
+[INFO] |     +- commons-collections:commons-collections:jar:3.2.1:compile
+[INFO] |     +- com.google.guava:guava:jar:11.0:compile
+[INFO] |     |  \- com.google.code.findbugs:jsr305:jar:1.3.9:compile
+[INFO] |     +- code.google.com:patricia-trie:jar:0.6:compile
+[INFO] |     +- org.antlr:antlr-runtime:jar:3.4:compile
+[INFO] |     |  +- org.antlr:stringtemplate:jar:3.2.1:compile
+[INFO] |     |  \- antlr:antlr:jar:2.7.7:compile
+[INFO] |     +- org.antlr:ST4:jar:4.0.7:compile
+[INFO] |     +- jrexx:jrexx:jar:1.1.1:compile
+[INFO] |     +- net.sf.opencsv:opencsv:jar:2.3:compile
+[INFO] |     +- net.sourceforge.jexcelapi:jxl:jar:2.6.12:compile
+[INFO] |     +- com.h2database:h2:jar:1.3.170:compile
+[INFO] |     +- org.jgrapht:jgrapht-core:jar:0.9.0:compile
+[INFO] |     +- org.springframework:spring-jdbc:jar:4.1.4.RELEASE:compile
+[INFO] |     |  +- org.springframework:spring-beans:jar:4.1.4.RELEASE:compile
+[INFO] |     |  +- org.springframework:spring-core:jar:4.1.4.RELEASE:compile
+[INFO] |     |  \- org.springframework:spring-tx:jar:4.1.4.RELEASE:compile
+[INFO] |     +- org.springframework.batch:spring-batch-core:jar:3.0.3.RELEASE:compile
+[INFO] |     |  +- com.ibm.jbatch:com.ibm.jbatch-tck-spi:jar:1.0:compile
+[INFO] |     |  |  \- javax.batch:javax.batch-api:jar:1.0:compile
+[INFO] |     |  +- org.codehaus.jettison:jettison:jar:1.2:compile
+[INFO] |     |  +- org.springframework:spring-aop:jar:4.0.5.RELEASE:compile
+[INFO] |     |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |     |  \- org.springframework:spring-context:jar:4.0.5.RELEASE:compile
+[INFO] |     |     \- org.springframework:spring-expression:jar:4.0.5.RELEASE:compile
+[INFO] |     +- org.springframework.batch:spring-batch-infrastructure:jar:3.0.3.RELEASE:compile
+[INFO] |     |  \- org.springframework.retry:spring-retry:jar:1.1.0.RELEASE:compile
+[INFO] |     \- net.sf.jsqlparser:jsqlparser:jar:0.8.0:compile
+[INFO] \- net.sf.jopt-simple:jopt-simple:jar:4.9-beta-1:compile
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building sml-converters-debian-cli 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.1:tree (default-cli) @ sml-converters-debian-cli ---
+[INFO] org.aksw.sml:sml-converters-debian-cli:jar:0.0.1-SNAPSHOT
+[INFO] \- org.aksw.sml:sml-converters-cli:jar:0.0.1-SNAPSHOT:compile
+[INFO]    +- org.aksw.sml:sml-converters-core:jar:0.0.1-SNAPSHOT:compile
+[INFO]    |  \- org.aksw.sparqlify:sparqlify-core:jar:0.6.16-SNAPSHOT:compile
+[INFO]    |     +- org.aksw.jena-sparql-api:jena-sparql-api-core:jar:2.12.1-8:compile
+[INFO]    |     |  +- org.aksw.jena-sparql-api:jena-sparql-api-utils:jar:2.12.1-8:compile
+[INFO]    |     |  |  +- org.apache.jena:jena-sdb:jar:1.5.1:compile
+[INFO]    |     |  |  \- com.google.code.gson:gson:jar:2.2.4:compile
+[INFO]    |     |  +- org.apache.jena:jena-core:jar:2.12.1:compile
+[INFO]    |     |  |  +- xerces:xercesImpl:jar:2.11.0:compile
+[INFO]    |     |  |  |  \- xml-apis:xml-apis:jar:1.4.01:compile
+[INFO]    |     |  |  \- org.slf4j:slf4j-log4j12:jar:1.6.0:compile
+[INFO]    |     |  +- org.apache.jena:jena-arq:jar:2.12.1:compile
+[INFO]    |     |  |  +- org.apache.httpcomponents:httpclient:jar:4.2.6:compile
+[INFO]    |     |  |  |  +- org.apache.httpcomponents:httpcore:jar:4.2.5:compile
+[INFO]    |     |  |  |  \- commons-codec:commons-codec:jar:1.6:compile
+[INFO]    |     |  |  +- com.github.jsonld-java:jsonld-java:jar:0.5.0:compile
+[INFO]    |     |  |  |  +- com.fasterxml.jackson.core:jackson-core:jar:2.3.3:compile
+[INFO]    |     |  |  |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.3.3:compile
+[INFO]    |     |  |  |     \- com.fasterxml.jackson.core:jackson-annotations:jar:2.3.0:compile
+[INFO]    |     |  |  +- org.apache.httpcomponents:httpclient-cache:jar:4.2.6:compile
+[INFO]    |     |  |  +- org.apache.thrift:libthrift:jar:0.9.1:compile
+[INFO]    |     |  |  |  \- org.apache.commons:commons-lang3:jar:3.1:compile
+[INFO]    |     |  |  +- org.slf4j:jcl-over-slf4j:jar:1.7.6:compile
+[INFO]    |     |  |  \- org.apache.commons:commons-csv:jar:1.0:compile
+[INFO]    |     |  +- org.apache.jena:jena-iri:jar:1.1.1:compile
+[INFO]    |     |  +- org.apache.commons:commons-compress:jar:1.2:compile
+[INFO]    |     |  \- com.blogspot.nurkiewicz.asyncretry:asyncretry:jar:0.0.1:compile
+[INFO]    |     +- org.aksw.sparqlify:sparqlify-type-system:jar:0.6.16-SNAPSHOT:compile
+[INFO]    |     +- org.aksw.sparqlify:sparqlify-tests:jar:0.6.16-SNAPSHOT:runtime
+[INFO]    |     |  \- org.aksw.jena-sparql-api:jena-sparql-api-web:jar:2.12.1-8:runtime
+[INFO]    |     |     +- org.aksw.jena-sparql-api:jena-sparql-api-concepts:jar:2.12.1-8:runtime
+[INFO]    |     |     +- org.glassfish.jersey.ext:jersey-spring3:jar:2.15:runtime
+[INFO]    |     |     |  +- org.glassfish.jersey.core:jersey-server:jar:2.15:runtime
+[INFO]    |     |     |  |  +- org.glassfish.jersey.core:jersey-common:jar:2.15:runtime
+[INFO]    |     |     |  |  |  +- org.glassfish.jersey.bundles.repackaged:jersey-guava:jar:2.15:runtime
+[INFO]    |     |     |  |  |  \- org.glassfish.hk2:osgi-resource-locator:jar:1.0.1:runtime
+[INFO]    |     |     |  |  +- org.glassfish.jersey.core:jersey-client:jar:2.15:runtime
+[INFO]    |     |     |  |  +- javax.annotation:javax.annotation-api:jar:1.2:runtime
+[INFO]    |     |     |  |  +- org.glassfish.hk2:hk2-api:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  +- org.glassfish.hk2.external:javax.inject:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  \- org.glassfish.hk2:hk2-locator:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |     \- org.javassist:javassist:jar:3.18.1-GA:runtime
+[INFO]    |     |     |  +- org.glassfish.jersey.containers:jersey-container-servlet-core:jar:2.15:runtime
+[INFO]    |     |     |  +- org.glassfish.hk2:hk2:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  +- org.glassfish.hk2:hk2-utils:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  +- org.glassfish.hk2:config-types:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  +- org.glassfish.hk2:core:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  +- org.glassfish.hk2:hk2-config:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  |  \- org.glassfish.hk2.external:bean-validator:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  +- org.glassfish.hk2:hk2-runlevel:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |  \- org.glassfish.hk2:class-model:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  |     \- org.glassfish.hk2.external:asm-all-repackaged:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  +- org.glassfish.hk2:spring-bridge:jar:2.4.0-b06:runtime
+[INFO]    |     |     |  \- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:runtime
+[INFO]    |     |     +- org.springframework:spring-web:jar:4.1.4.RELEASE:runtime
+[INFO]    |     |     \- org.eclipse.jetty:jetty-servlet:jar:8.1.16.v20140903:runtime
+[INFO]    |     |        \- org.eclipse.jetty:jetty-security:jar:8.1.16.v20140903:runtime
+[INFO]    |     |           \- org.eclipse.jetty:jetty-server:jar:8.1.16.v20140903:runtime
+[INFO]    |     |              +- org.eclipse.jetty.orbit:javax.servlet:jar:3.0.0.v201112011016:runtime
+[INFO]    |     |              +- org.eclipse.jetty:jetty-continuation:jar:8.1.16.v20140903:runtime
+[INFO]    |     |              \- org.eclipse.jetty:jetty-http:jar:8.1.16.v20140903:runtime
+[INFO]    |     |                 \- org.eclipse.jetty:jetty-io:jar:8.1.16.v20140903:runtime
+[INFO]    |     |                    \- org.eclipse.jetty:jetty-util:jar:8.1.16.v20140903:runtime
+[INFO]    |     +- org.aksw.commons:aksw-commons-util:jar:0.7.5:compile
+[INFO]    |     |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO]    |     |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO]    |     +- org.aksw.commons:aksw-commons-collections:jar:0.7.5:compile
+[INFO]    |     +- com.jolbox:bonecp:jar:0.7.1.RELEASE:compile
+[INFO]    |     +- log4j:log4j:jar:1.2.14:compile
+[INFO]    |     +- commons-lang:commons-lang:jar:2.4:compile
+[INFO]    |     +- commons-cli:commons-cli:jar:1.2:compile
+[INFO]    |     +- commons-validator:commons-validator:jar:1.4.0:compile
+[INFO]    |     |  \- commons-digester:commons-digester:jar:1.8:compile
+[INFO]    |     +- commons-beanutils:commons-beanutils-core:jar:1.8.3:compile
+[INFO]    |     +- net.sourceforge.collections:collections-generic:jar:4.01:compile
+[INFO]    |     +- postgresql:postgresql:jar:8.4-701.jdbc4:compile
+[INFO]    |     +- org.postgis:postgis-jdbc:jar:1.3.3:compile
+[INFO]    |     |  \- org.postgis:postgis-stubs:jar:1.3.3:compile
+[INFO]    |     +- org.slf4j:slf4j-api:jar:1.6.0:compile
+[INFO]    |     +- org.slf4j:slf4j-ext:jar:1.6.0:compile
+[INFO]    |     |  \- ch.qos.cal10n:cal10n-api:jar:0.7.2:compile
+[INFO]    |     +- commons-collections:commons-collections:jar:3.2.1:compile
+[INFO]    |     +- com.google.guava:guava:jar:11.0:compile
+[INFO]    |     |  \- com.google.code.findbugs:jsr305:jar:1.3.9:compile
+[INFO]    |     +- code.google.com:patricia-trie:jar:0.6:compile
+[INFO]    |     +- org.antlr:antlr-runtime:jar:3.4:compile
+[INFO]    |     |  +- org.antlr:stringtemplate:jar:3.2.1:compile
+[INFO]    |     |  \- antlr:antlr:jar:2.7.7:compile
+[INFO]    |     +- org.antlr:ST4:jar:4.0.7:compile
+[INFO]    |     +- jrexx:jrexx:jar:1.1.1:compile
+[INFO]    |     +- net.sf.opencsv:opencsv:jar:2.3:compile
+[INFO]    |     +- net.sourceforge.jexcelapi:jxl:jar:2.6.12:compile
+[INFO]    |     +- com.h2database:h2:jar:1.3.170:compile
+[INFO]    |     +- org.jgrapht:jgrapht-core:jar:0.9.0:compile
+[INFO]    |     +- org.springframework:spring-jdbc:jar:4.1.4.RELEASE:compile
+[INFO]    |     |  +- org.springframework:spring-beans:jar:4.1.4.RELEASE:compile
+[INFO]    |     |  +- org.springframework:spring-core:jar:4.1.4.RELEASE:compile
+[INFO]    |     |  \- org.springframework:spring-tx:jar:4.1.4.RELEASE:compile
+[INFO]    |     +- org.springframework.batch:spring-batch-core:jar:3.0.3.RELEASE:compile
+[INFO]    |     |  +- com.ibm.jbatch:com.ibm.jbatch-tck-spi:jar:1.0:compile
+[INFO]    |     |  |  \- javax.batch:javax.batch-api:jar:1.0:compile
+[INFO]    |     |  +- org.codehaus.jettison:jettison:jar:1.2:compile
+[INFO]    |     |  +- org.springframework:spring-aop:jar:4.0.5.RELEASE:compile
+[INFO]    |     |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO]    |     |  \- org.springframework:spring-context:jar:4.0.5.RELEASE:compile
+[INFO]    |     |     \- org.springframework:spring-expression:jar:4.0.5.RELEASE:compile
+[INFO]    |     +- org.springframework.batch:spring-batch-infrastructure:jar:3.0.3.RELEASE:compile
+[INFO]    |     |  \- org.springframework.retry:spring-retry:jar:1.1.0.RELEASE:compile
+[INFO]    |     \- net.sf.jsqlparser:jsqlparser:jar:0.8.0:compile
+[INFO]    \- net.sf.jopt-simple:jopt-simple:jar:4.9-beta-1:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] sml-converters-parent ............................. SUCCESS [0.569s]
+[INFO] sml-converters-core ............................... SUCCESS [2.063s]
+[INFO] sml-converters-cli ................................ SUCCESS [0.174s]
+[INFO] sml-converters-debian-cli ......................... SUCCESS [0.128s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3.415s
+[INFO] Finished at: Mon Jun 29 17:13:48 CEST 2015
+[INFO] Final Memory: 19M/341M
+[INFO] ------------------------------------------------------------------------
