@@ -7,5 +7,6 @@ release.properties
 .project
 .settings
 *.swp
+deptree.txt
 
 dependency-reduced-pom.xml
