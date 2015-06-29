@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,11 +78,18 @@ class ProcessorR2rmlToSml
 {
     @Override
     public void doProcess(InputStream in, OutputStream out) throws Exception {
+        PrintWriter w = new PrintWriter(out);
+
         Model r2rmlModel = ModelFactory.createDefaultModel();
         r2rmlModel.read(in, null, "TURTLE");
 
         List<ViewDefinition> viewDefs = R2RML2SMLConverter.convert(r2rmlModel);
-        System.out.println(viewDefs);
+        for(ViewDefinition viewDef : viewDefs) {
+            w.println(viewDef);
+            w.flush();
+        }
+
+        //System.out.println(viewDefs);
     }
 }
 
