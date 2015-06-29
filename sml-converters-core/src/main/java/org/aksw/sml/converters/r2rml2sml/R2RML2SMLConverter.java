@@ -242,6 +242,7 @@ public class R2RML2SMLConverter {
 
         int graphVarNameCounter = 1;
         int subjVarNameCounter = 1;
+        int predObjectCounter = 1;
         ViewDefinitionInfo viewDefInfo = null;
 
         for (TriplesMap triplesMap : trplsMaps) {
@@ -342,7 +343,7 @@ public class R2RML2SMLConverter {
                 int predVarNameCounter = 1;
 
                 for (PredicateMap predicateMap : predicateMaps) {
-                    String predVarName = predicateVarNamePrefix + predVarNameCounter;
+                    String predVarName = predicateVarNamePrefix + predObjectCounter + predVarNameCounter;
                     predVarNameCounter++;
 
                     Node predicate = buildNodeFromTermMap(predicateMap, predVarName);
@@ -356,7 +357,7 @@ public class R2RML2SMLConverter {
                     int objVarNameCounter = 1;
 
                     for (ObjectMap objectMap : objectMaps) {
-                        String objectVarName = objectvarNamePrefix + objVarNameCounter;
+                        String objectVarName = objectvarNamePrefix + predObjectCounter + objVarNameCounter;
                         objVarNameCounter++;
 
                         Node object = buildNodeFromTermMap(objectMap, objectVarName);
@@ -368,6 +369,7 @@ public class R2RML2SMLConverter {
                     }
                 }
 
+                predObjectCounter++;
                 viewDefInfo.quadPatternInfo.addPredicatesObjectsToSubject(pos, subject);
             }
         }
