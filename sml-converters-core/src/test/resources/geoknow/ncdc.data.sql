@@ -9,12 +9,12 @@ SET search_path = public, pg_catalog;
 
 
 COPY ncdc_stations(id, latitude, longitude, elevation, state, name, gsn_flag, hcn_flag, wmo_id) FROM stdin;
-10	11	12	myState	myName	myGsnFlag	myHcnFlag	myWmoId
+10	11	12	13	myState	myName	myGsnFlag	myHcnFlag	myWmoId
 \.
 
 
 COPY ncdc_ghcn_daily(id, date, element, value, m_flag, q_flag, s_flag, time) FROM stdin;
-20	2015-10-27	myElement	myValue myMflag	myQFlag	mySFlag	2015-10-27
+20	2015-10-27	myElement	myValue	myMflag	myQFlag	mySFlag	10:00
 \.
 
 
