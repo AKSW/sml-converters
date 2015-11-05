@@ -1,9 +1,9 @@
-Prefix base: <http://example.org/station>
+Prefix base: <http://example.org/station/>
 Prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 Prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 Prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 Prefix gwo: <http://www.xybermotive.com/GeoKnowWeatherOnt#>
-
+Prefix ogc: <http://www.opengis.net/ont/geosparql#>
 
 Create View ncdc_ghcn_daily_prcp As
   Construct {
@@ -68,7 +68,8 @@ Create View ncdc_stations As
       geo:alt ?e ;
       geo:long ?x ;
       geo:lat ?y ;
-      gwo:hasObservation ?o
+      gwo:hasObservation ?o ;
+      ogc:asWKT ?w
   }
   With
     ?s = uri(base:, ?id)
@@ -78,8 +79,7 @@ Create View ncdc_stations As
     ?x = plainLiteral(?longitude)
     ?y = plainLiteral(?latitude)
     ?o = uri(base:, ?id, '-', ?date)
+    ?w = typedLiteral(concat('POINT (', ?x, ' ', ?y, ')'), ogc:wktLiteral)
   From
-    [[SELECT a.date, b.id, b.name, b.elevation, b.longitude, b.latitude FROM ncdc_ghcn_daily a, ncdc_stations b WHERE a.element = 'TMIN' AND a.id = b.id]]
-
-
+    [[SELECT a.date, b.id, b.name, b.elevation, b.longitude, b.latitude, b.longitude::text x, b.latitude::text y FROM ncdc_ghcn_daily a, ncdc_stations b WHERE a.element = 'TMIN' AND a.id = b.id]]
 
